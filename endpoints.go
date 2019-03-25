@@ -31,6 +31,9 @@ const (
 	endpointSubscriptionCancelImmediately   = "subscription_cancel_immediately"
 	endpointSubscriptionCancelDelayed       = "subscription_cancel_delayed"
 	endpointSubscriptionRemoveDelayedCancel = "subscription_remove_delayed_cancel"
+
+	endpointSubscriptionMigrate   = "subscription_migrate"
+	endpointSubscriptionUpdateNow = "subscription_update_now"
 )
 
 var endpoints = map[string]endpoint{
@@ -151,6 +154,13 @@ var endpoints = map[string]endpoint{
 	endpointSubscriptionRemoveDelayedCancel: endpoint{
 		method: http.MethodDelete,
 		uri:    "subscriptions/{subscriptionID}/delayed_cancel",
+		pathParams: []string{
+			"{subscriptionID}",
+		},
+	},
+	endpointSubscriptionMigrate: endpoint{
+		method: http.MethodPost,
+		uri:    "subscriptions/{subscriptionID}/migrations",
 		pathParams: []string{
 			"{subscriptionID}",
 		},

@@ -85,3 +85,21 @@ func RemoveDelayedSubscriptionCancellation(subscriptionID int64) error {
 	})
 	return err
 }
+
+// MigrateSubscription migrates an existing subscription to a new subscription
+func MigrateSubscription(targetProductHandle string, currentSubscriptionID int64, includeTrial bool, includeInitialCharge bool, includeCoupons bool, preservePeriod bool) error {
+	body := map[string]map[string]interface{}{
+		"migration": map[string]interface{}{
+			"product_handle":         targetProductHandle,
+			"include_trial":          includeTrial,
+			"include_initial_charge": includeInitialCharge,
+			"include_coupons":        includeCoupons,
+			"preserve_period":        preservePeriod,
+		},
+	}
+
+	_, err := makeCall(endpoints[endpointSubscriptionMigrate], body, &map[string]string{
+		"subscriptionID": fmt.Sprintf("%d", currentSubscriptionID),
+	})
+	return err
+}
