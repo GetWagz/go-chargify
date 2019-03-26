@@ -20,6 +20,9 @@ type APIReturn struct {
 }
 
 func makeCall(end endpoint, body interface{}, pathParams *map[string]string) (ret APIReturn, err error) {
+	if config.subdomain == "" || config.apiKey == "" {
+		return ret, errors.New("configuration is invalid for chargify")
+	}
 	endpointURI := end.uri
 	if pathParams != nil {
 		for k, v := range *pathParams {
