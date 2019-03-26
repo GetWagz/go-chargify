@@ -15,7 +15,7 @@ type PaymentProfile struct {
 	SubscriptionID        int64       `json:"subscription,omitempty"`             // the subscription id after the profile is created
 	PaymentType           string      `json:"payment_type"`                       // (Optional) Default is credit_card. May be bank_account or credit_card or paypal_account.
 	CustomerID            int64       `json:"customer_id"`                        // 	(Required when creating a new payment profile) The Chargify customer id.
-	FiirstName            string      `json:"first_name,omitempty"`               // 	First name on card or bank account
+	FirstName             string      `json:"first_name,omitempty"`               // 	First name on card or bank account
 	LastName              string      `json:"last_name,omitempty"`                // 	Last name on card or bank account
 	FullNumber            string      `json:"full_number,omitempty"`              // 	(Required when payment_type is credit_card unless you provide the vault_token) The full credit card number (string representation, i.e. 5424000000000015)
 	ExpirationMonth       string      `json:"expiration_month,omitempty"`         // 	(Required when payment_type is credit_card unless you provide the vault_token) The 1- or 2-digit credit card expiration month, as an integer or string, i.e. 5
