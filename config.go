@@ -2,6 +2,7 @@ package chargify
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
 	"os"
 	"strings"
@@ -24,11 +25,11 @@ func setup() (err error) {
 
 	config.subdomain = strings.ToLower(envHelper("CHARGIFY_SUBDOMAIN", ""))
 	if config.subdomain == "" {
-		panic("subdomain not provided!")
+		log.Print("subdomain not provided!")
 	}
 	config.apiKey = envHelper("CHARGIFY_API_KEY", "")
 	if config.apiKey == "" {
-		panic("apikey not provided!")
+		log.Print("apikey not provided!")
 	}
 
 	config.root = fmt.Sprintf("https://%s.chargify.com/", config.subdomain)
