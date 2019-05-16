@@ -16,8 +16,9 @@ func TestSubscriptionCRUD(t *testing.T) {
 	require.Nil(t, err)
 	// defer ArchiveProduct(product.ID)
 	// note for the programmer: there is no way to archive a product family at this point
+	profileID := int64(0)
 
-	subscription, err := CreateSubscriptionForCustomer(customer.Reference, product.Handle)
+	subscription, err := CreateSubscriptionForCustomer(customer.Reference, product.Handle, profileID, nil)
 	require.Nil(t, err)
 	assert.NotZero(t, subscription.ID)
 
