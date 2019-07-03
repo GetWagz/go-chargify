@@ -4,9 +4,13 @@ This library is a small wrapper around a subset of the Chargify API.
 
 ## Installation
 
-Using your favorite dependency manager, make sure to add `github.com/getwagz/go-chargify`. For example, with dep,
+Using your favorite dependency manager, make sure to add `github.com/GetWagz/go-chargify`. For example, with dep,
 
-`dep ensure -add github.com/getwagz/go-chargify`
+`dep ensure -add github.com/GetWagz/go-chargify`
+
+With go version > 1.11.1
+
+`go mod tidy && go mod vendor`
 
 ## Usage
 
