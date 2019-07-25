@@ -73,15 +73,16 @@ func CancelSubscription(subscriptionID int64, cancelImmediately bool, reasonCode
 		})
 	} else {
 		// if the reason info is set, then add it
+		reason := map[string]string{}
 		if reasonCode != "" && cancellationMessage != "" {
-			reason := map[string]string{
+			reason = map[string]string{
 				"cancellation_message": cancellationMessage,
 				"reason_code":          reasonCode,
 			}
-			_, err = makeCall(endpoints[endpointSubscriptionCancelDelayed], reason, &map[string]string{
-				"subscriptionID": fmt.Sprintf("%d", subscriptionID),
-			})
 		}
+		_, err = makeCall(endpoints[endpointSubscriptionCancelDelayed], reason, &map[string]string{
+			"subscriptionID": fmt.Sprintf("%d", subscriptionID),
+		})
 	}
 	return err
 }
@@ -117,7 +118,6 @@ func GetSubscription(subscriptionID int64) (*Subscription, error) {
 	ret, err := makeCall(endpoints[endpointSubscriptionGet], nil, &map[string]string{
 		"subscriptionID": fmt.Sprintf("%d", subscriptionID),
 	})
-	fmt.Printf("\n%+v\n", ret)
 	if err != nil {
 		return nil, err
 	}

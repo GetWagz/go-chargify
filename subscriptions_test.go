@@ -22,12 +22,16 @@ func TestSubscriptionCRUD(t *testing.T) {
 	require.Nil(t, err)
 	assert.NotZero(t, subscription.ID)
 
-	err = CancelSubscription(subscription.ID, false, "MY_REASON", "Testing")
+	found, err := GetSubscription(subscription.ID)
 	assert.Nil(t, err)
+	assert.NotNil(t, found)
+
+	err = CancelSubscription(subscription.ID, false, "MY_REASON", "Testing")
+	require.Nil(t, err)
 
 	err = RemoveDelayedSubscriptionCancellation(subscription.ID)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 
 	err = CancelSubscription(subscription.ID, true, "MY_REASON", "Testing")
-	assert.Nil(t, err)
+	require.Nil(t, err)
 }

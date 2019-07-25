@@ -32,7 +32,7 @@ type PaymentProfile struct {
 	BankAccount           string      `json:"bank_account_number" mapstructure:"bank_account_number"`           // 	Required when creating a subscription with ACH) The customer’s bank account number
 	BankAccountType       string      `json:"bank_account_type" mapstructure:"bank_account_type"`               // 	When payment_type is bank_account, this defaults to checking and cannot be changed
 	BankAccountHolderType string      `json:"bank_account_holder_type" mapstructure:"bank_account_holder_type"` // 	When payment_type is bank_account, may be personal (default) or business
-	Verified              bool        `json:"verified" mapstructure:"verified"`                                 // 	When payment type is bank_account and current_vault is stripe_connect, may be set to true to indicate that the bank account has already been verified.
+	Verified              bool        `json:"verified,omitempty" mapstructure:"verified"`                       // 	When payment type is bank_account and current_vault is stripe_connect, may be set to true to indicate that the bank account has already been verified.
 	PaypalEmail           string      `json:"paypal_email" mapstructure:"paypal_email"`                         //
 	PaymentMethodNonce    string      `json:"payment_method_nonce" mapstructure:"payment_method_nonce"`         //
 	VaultToken            string      `json:"vault_token" mapstructure:"vault_token"`                           // 	(Only allowed during the creation of a new payment profile.) If you have an existing vault_token from your gateway, you may associate it with this new payment profile.
