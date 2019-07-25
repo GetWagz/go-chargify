@@ -73,10 +73,16 @@ func makeCall(end endpoint, body interface{}, pathParams *map[string]string) (re
 		err = errors.New("chargify server error")
 	case http.StatusOK, http.StatusCreated:
 		err = json.Unmarshal(response.Body(), &ret.Body)
+		// sometimes, the response body is empty. Chargify is not sure why, so if the error if `unexpected end of JSON input` we will just return a map[string]{}
+
 		if err != nil {
-			fmt.Printf("\nError: %+v\n", err)
-			err = errors.New("could not unmarshal the JSON response; check the API")
-			return
+			if err.Error() == "unexpected end of JSON input" {
+				ret.Body = map[string]string{}
+				err = nil
+			} else {
+				err = errors.New("could not unmarshal the JSON response; check the API")
+				return
+			}
 		}
 	case http.StatusNoContent:
 	default:
@@ -119,17 +125,23 @@ func convertStructToMap(i interface{}) (result map[string]string) {
 
 func apiErrorToError(input interface{}) error {
 	// the body is likely a map of errors to []string
-	errsI, errsOK := input.(map[string]interface{})
-	if errsOK {
-		errs := errsI["errors"].([]interface{})
-		errorStrings := make([]string, len(errs))
-		for i := range errs {
-			errorStrings = append(errorStrings, errs[i].(string))
+	// sometimes it is just a map of errors to a single string
+	// which is pretty frustrating
+	finalError := ""
+
+	if errsI, errsOK := input.(map[string]interface{}); errsOK {
+		if errs, errsIsSlice := errsI["errors"].([]interface{}); errsIsSlice {
+			errorStrings := make([]string, len(errs))
+			for i := range errs {
+				errorStrings = append(errorStrings, errs[i].(string))
+			}
+			finalError = strings.Join(errorStrings, " ")
+		} else if err, errIsString := errsI["errors"].(string); errIsString {
+			finalError = err
 		}
-		e := strings.Join(errorStrings, " ")
-		return errors.New(e)
+		return errors.New(finalError)
 	}
-	return errors.New("errors not found or not valid")
+	return errors.New("error not found or not valid")
 }
 
 // ConvertJSONFloatToInt converts a float64 to an int64 from the JSON field interface

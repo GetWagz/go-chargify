@@ -27,7 +27,8 @@ const (
 	endpointProductGetByHandle  = "product_get_by_handle"
 	endpointProductGetForFamily = "product_get_for_family"
 
-	endpointSubscriptionCreate              = "subscription_correct"
+	endpointSubscriptionCreate              = "subscription_create"
+	endpointSubscriptionGet                 = "subscription_get"
 	endpointSubscriptionCancelImmediately   = "subscription_cancel_immediately"
 	endpointSubscriptionCancelDelayed       = "subscription_cancel_delayed"
 	endpointSubscriptionRemoveDelayedCancel = "subscription_remove_delayed_cancel"
@@ -136,6 +137,13 @@ var endpoints = map[string]endpoint{
 		method:     http.MethodPost,
 		uri:        "subscriptions",
 		pathParams: []string{},
+	},
+	endpointSubscriptionGet: endpoint{
+		method: http.MethodGet,
+		uri:    "subscriptions/{subscriptionID}",
+		pathParams: []string{
+			"{subscriptionID}",
+		},
 	},
 	endpointSubscriptionCancelImmediately: endpoint{
 		method: http.MethodDelete,

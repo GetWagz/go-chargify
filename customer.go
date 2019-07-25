@@ -12,29 +12,29 @@ import (
 
 // Customer is a single customer in the chargify account
 type Customer struct {
-	ID                         int64    `json:"id"`         //	The customer ID in Chargify
-	FirstName                  string   `json:"first_name"` //	The first name of the customer
-	LastName                   string   `json:"last_name"`  //	The last name of the customer
-	Email                      string   `json:"email"`      //	The email address of the customer
-	CCEmailsRaw                string   `json:"cc_emails"`  //	(Optional) A comma-separated list of emails that should be cc’d on all customer communications (i.e. “joe@example.com, sue@example.com”)
+	ID                         int64    `json:"id" mapstructure:"id"`                 //	The customer ID in Chargify
+	FirstName                  string   `json:"first_name" mapstructure:"first_name"` //	The first name of the customer
+	LastName                   string   `json:"last_name" mapstructure:"last_name"`   //	The last name of the customer
+	Email                      string   `json:"email" mapstructure:"email"`           //	The email address of the customer
+	CCEmailsRaw                string   `json:"cc_emails" mapstructure:"cc_emails"`   //	(Optional) A comma-separated list of emails that should be cc’d on all customer communications (i.e. “joe@example.com, sue@example.com”)
 	CCEmails                   []string // the proccessed CC emails
-	Organization               string   `json:"organization"`                   //	The organization of the customer
-	Reference                  string   `json:"reference"`                      //	The unique identifier used within your own application for this customer
-	CreatedAt                  string   `json:"created_at"`                     //	The timestamp in which the customer object was created in Chargify
-	UpdatedAt                  string   `json:"updated_at"`                     //	The timestamp in which the customer object was last edited
-	Address                    string   `json:"address"`                        //	The customer’s shipping street address (i.e. “123 Main St.”)
-	Address2                   string   `json:"address_2"`                      //	Second line of the customer’s shipping address i.e. “Apt. 100”
-	City                       string   `json:"city"`                           //	The customer’s shipping address city (i.e. “Boston”)
-	State                      string   `json:"state"`                          //	The customer’s shipping address state (i.e. “MA”)
-	Zip                        string   `json:"zip"`                            //	The customer’s shipping address zip code (i.e. “12345”)
-	Country                    string   `json:"country"`                        //	The customer shipping address country, perferably in  format (i.e. “US”)
-	Phone                      string   `json:"phone"`                          //	The phone number of the customer
-	Verified                   bool     `json:"verified"`                       //	Is the customer verified to use ACH as a payment method. Available only on Authorize.Net gateway
-	PortalCustomerCreatedAt    string   `json:"portal_customer_created_at"`     //	The timestamp of when the Billing Portal entry was created at for the customer
-	PortalInviteLastSentAt     string   `json:"portal_invite_last_sent_at"`     //	The timestamp of when the Billing Portal invite was last sent at
-	PortalInviteLastAcceptedAt string   `json:"portal_invite_last_accepted_at"` //	The timestamp of when the Billing Portal invite was last accepted
-	TaxExempt                  bool     `json:"tax_exempt"`                     //	(Optional) The tax exempt status for the customer. Acceptable values are true or 1 for true and false or 0 for false.
-	VatNumber                  string   `json:"vat_number"`                     //	(Optional) The VAT number, if applicable
+	Organization               string   `json:"organization" mapstructure:"organization"`                                     //	The organization of the customer
+	Reference                  string   `json:"reference" mapstructure:"reference"`                                           //	The unique identifier used within your own application for this customer
+	CreatedAt                  string   `json:"created_at" mapstructure:"created_at"`                                         //	The timestamp in which the customer object was created in Chargify
+	UpdatedAt                  string   `json:"updated_at" mapstructure:"updated_at"`                                         //	The timestamp in which the customer object was last edited
+	Address                    string   `json:"address" mapstructure:"address"`                                               //	The customer’s shipping street address (i.e. “123 Main St.”)
+	Address2                   string   `json:"address_2" mapstructure:"address_2"`                                           //	Second line of the customer’s shipping address i.e. “Apt. 100”
+	City                       string   `json:"city" mapstructure:"city"`                                                     //	The customer’s shipping address city (i.e. “Boston”)
+	State                      string   `json:"state" mapstructure:"state"`                                                   //	The customer’s shipping address state (i.e. “MA”)
+	Zip                        string   `json:"zip" mapstructure:"zip"`                                                       //	The customer’s shipping address zip code (i.e. “12345”)
+	Country                    string   `json:"country" mapstructure:"country"`                                               //	The customer shipping address country, perferably in  format (i.e. “US”)
+	Phone                      string   `json:"phone" mapstructure:"phone"`                                                   //	The phone number of the customer
+	Verified                   bool     `json:"verified" mapstructure:"verified"`                                             //	Is the customer verified to use ACH as a payment method. Available only on Authorize.Net gateway
+	PortalCustomerCreatedAt    string   `json:"portal_customer_created_at" mapstructure:"portal_customer_created_at"`         //	The timestamp of when the Billing Portal entry was created at for the customer
+	PortalInviteLastSentAt     string   `json:"portal_invite_last_sent_at" mapstructure:"portal_invite_last_sent_at"`         //	The timestamp of when the Billing Portal invite was last sent at
+	PortalInviteLastAcceptedAt string   `json:"portal_invite_last_accepted_at" mapstructure:"portal_invite_last_accepted_at"` //	The timestamp of when the Billing Portal invite was last accepted
+	TaxExempt                  bool     `json:"tax_exempt" mapstructure:"tax_exempt"`                                         //	(Optional) The tax exempt status for the customer. Acceptable values are true or 1 for true and false or 0 for false.
+	VatNumber                  string   `json:"vat_number" mapstructure:"vat_number"`                                         //	(Optional) The VAT number, if applicable
 }
 
 // CreateCustomer creates a new customer on chargify
