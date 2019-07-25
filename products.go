@@ -21,31 +21,31 @@ var (
 
 // Product represents a single product
 type Product struct {
-	ID                      int64            `json:"id"`
-	PriceInCents            int              `json:"price_in_cents"`                 //	The product price, in integer cents
-	Name                    string           `json:"name"`                           //	The product name
-	Handle                  string           `json:"handle"`                         //	The product API handle
-	Description             string           `json:"description"`                    //	The product description
-	ProductFamily           *ProductFamily   `json:"product_family,omitempty"`       //	Nested attributes pertaining to the product family to which this product belongs
-	IntervalUnit            ProductInterval  `json:"interval_unit"`                  // A string representing the interval unit for this product, either month or day
-	IntervalValue           int              `json:"interval"`                       // The numerical interval. i.e. an interval of ‘30’ coupled with an interval_unit of day would mean this product would renew every 30 days
-	InitialChargeInCents    int              `json:"initial_charge_in_cents"`        // The up front charge you have specified.
-	TrialPriceInCents       *int             `json:"trial_price_in_cents,omitempty"` // The price of the trial period for a subscription to this product, in integer cents.
-	TrialIntervalValue      *int             `json:"trial_interval,omitempty"`       // A numerical interval for the length of the trial period of a subscription to this product. See the description of interval for a description of how this value is coupled with an interval unit to calculate the full interval
-	TrialIntervalUnit       *ProductInterval `json:"trial_interval_unit,omitempty"`  // A string representing the trial interval unit for this product, either month or day
-	ExpirationIntervalValue int              `json:"expiration_interval"`            // A numerical interval for the length a subscription to this product will run before it expires. See the description of interval for a description of how this value is coupled with an interval unit to calculate the full interval
-	ExpirationIntervalUnit  ProductInterval  `json:"expiration_interval_unit"`       // A string representing the trial interval unit for this product, either month or day
-	VersionNumber           string           `json:"version_number"`                 // The version of the product
-	UpdateReturnURL         string           `json:"update_return_url"`              // The url to which a customer will be returned after a successful account update
-	UpdateReturnParams      string           `json:"update_return_params"`           // The parameters will append to the url after a successful account update
-	RequireCreditCard       bool             `json:"require_credit_card"`            // Boolean
-	RequestCreditCard       bool             `json:"request_credit_card"`            // Boolean
-	CreatedAt               string           `json:"created_at"`                     // Timestamp indicating when this product was created
-	UpdatedAt               string           `json:"updated_at"`                     // Timestamp indicating when this product was last updated
-	Archived                string           `json:"archived_at"`                    // Timestamp indicating when this product was archived
-	SignupPages             *[]SignupPage    `json:"public_signup_pages,omitempty"`  // An array of signup pages
-	AutoCreateSignupPage    bool             `json:"auto_create_signup_page"`        // Whether or not to create a signup page
-	TaxCode                 string           `json:"tax_code"`                       // A string representing the tax code related to the product type. This is especially important when using the Avalara service to tax based on locale. This attribute has a max length of 10 characters.
+	ID                      int64           `json:"id"`
+	PriceInCents            int             `json:"price_in_cents" mapstructure:"price_in_cents"`                     //	The product price, in integer cents
+	Name                    string          `json:"name" mapstructure:"name"`                                         //	The product name
+	Handle                  string          `json:"handle" mapstructure:"handle"`                                     //	The product API handle
+	Description             string          `json:"description" mapstructure:"description"`                           //	The product description
+	ProductFamily           *ProductFamily  `json:"product_family" mapstructure:"product_family"`                     //	Nested attributes pertaining to the product family to which this product belongs
+	IntervalUnit            ProductInterval `json:"interval_unit" mapstructure:"interval_unit"`                       // A string representing the interval unit for this product, either month or day
+	IntervalValue           int             `json:"interval" mapstructure:"interval"`                                 // The numerical interval. i.e. an interval of ‘30’ coupled with an interval_unit of day would mean this product would renew every 30 days
+	InitialChargeInCents    int             `json:"initial_charge_in_cents" mapstructure:"initial_charge_in_cents"`   // The up front charge you have specified.
+	TrialPriceInCents       int             `json:"trial_price_in_cents" mapstructure:"trial_price_in_cents"`         // The price of the trial period for a subscription to this product, in integer cents.
+	TrialIntervalValue      int             `json:"trial_interval" mapstructure:"trial_interval"`                     // A numerical interval for the length of the trial period of a subscription to this product. See the description of interval for a description of how this value is coupled with an interval unit to calculate the full interval
+	TrialIntervalUnit       ProductInterval `json:"trial_interval_unit" mapstructure:"trial_interval_unit"`           // A string representing the trial interval unit for this product, either month or day
+	ExpirationIntervalValue int             `json:"expiration_interval" mapstructure:"expiration_interval"`           // A numerical interval for the length a subscription to this product will run before it expires. See the description of interval for a description of how this value is coupled with an interval unit to calculate the full interval
+	ExpirationIntervalUnit  ProductInterval `json:"expiration_interval_unit" mapstructure:"expiration_interval_unit"` // A string representing the trial interval unit for this product, either month or day
+	VersionNumber           float64         `json:"version_number" mapstructure:"version_number"`                     // The version of the product
+	UpdateReturnURL         string          `json:"update_return_url" mapstructure:"update_return_url"`               // The url to which a customer will be returned after a successful account update
+	UpdateReturnParams      string          `json:"update_return_params" mapstructure:"update_return_params"`         // The parameters will append to the url after a successful account update
+	RequireCreditCard       bool            `json:"require_credit_card" mapstructure:"require_credit_card"`           // Boolean
+	RequestCreditCard       bool            `json:"request_credit_card" mapstructure:"request_credit_card"`           // Boolean
+	CreatedAt               string          `json:"created_at" mapstructure:"created_at"`                             // Timestamp indicating when this product was created
+	UpdatedAt               string          `json:"updated_at" mapstructure:"updated_at"`                             // Timestamp indicating when this product was last updated
+	Archived                string          `json:"archived_at" mapstructure:"archived_at"`                           // Timestamp indicating when this product was archived
+	SignupPages             *[]SignupPage   `json:"public_signup_pages" mapstructure:"public_signup_pages"`           // An array of signup pages
+	AutoCreateSignupPage    bool            `json:"auto_create_signup_page" mapstructure:"auto_create_signup_page"`   // Whether or not to create a signup page
+	TaxCode                 string          `json:"tax_code" mapstructure:"tax_code"`                                 // A string representing the tax code related to the product type. This is especially important when using the Avalara service to tax based on locale. This attribute has a max length of 10 characters.
 }
 
 // SignupPage represents a product's signup page, if needed
