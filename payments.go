@@ -162,5 +162,24 @@ func DeletePaymentProfile(subscriptionID int64, profileID int64) error {
 
 // UpdatePaymentProfile updates a payment profile
 func UpdatePaymentProfile(input *PaymentProfile) error {
-	return errors.New("not implemented")
+	body := map[string]PaymentProfile{
+		"payment_profile": *input,
+	}
+
+	ret, err := makeCall(endpoints[endpointPaymentProfileUpdate], body, &map[string]string{
+		"paymentProfileID": fmt.Sprintf("%d", input.ID),
+	})
+	if err != nil {
+		return err
+	}
+	if ret.HTTPCode != http.StatusOK {
+		return errors.New("could not update that profile")
+	}
+	// if successful, the profile should come back in a map[payment_profile]PaymentProfile format
+	apiBody, bodyOK := ret.Body.(map[string]interface{})
+	if !bodyOK {
+		return errors.New("could not understand server response")
+	}
+	err = mapstructure.Decode(apiBody["payment_profile"], input)
+	return err
 }
