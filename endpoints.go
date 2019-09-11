@@ -9,6 +9,10 @@ type endpoint struct {
 }
 
 const (
+	endpointBillingPortalEnable          = "billing_portal_enable"
+	endpointBillingPortalEnableAndInvite = "billing_portal_enable_and_invite"
+	endpointBillingPortalGet             = "billing_portal_get"
+
 	endpointCustomerCreate = "customer_create"
 	endpointCustomerDelete = "customer_delete"
 	endpointCustomersGet   = "customers_get"
@@ -39,6 +43,7 @@ const (
 )
 
 var endpoints = map[string]endpoint{
+	// customers
 	endpointCustomerCreate: endpoint{
 		method:     http.MethodPost,
 		uri:        "customers",
@@ -55,6 +60,28 @@ var endpoints = map[string]endpoint{
 		method:     http.MethodGet,
 		uri:        "customers",
 		pathParams: []string{},
+	},
+	// billing portals
+	endpointBillingPortalEnable: endpoint{
+		method: http.MethodPost,
+		uri:    "portal/customers/{id}/enable",
+		pathParams: []string{
+			"{id}",
+		},
+	},
+	endpointBillingPortalEnableAndInvite: endpoint{
+		method: http.MethodPost,
+		uri:    "portal/customers/{id}/enable?invite=1",
+		pathParams: []string{
+			"{id}",
+		},
+	},
+	endpointBillingPortalGet: endpoint{
+		method: http.MethodGet,
+		uri:    "portal/customers/{id}/management_link",
+		pathParams: []string{
+			"{id}",
+		},
 	},
 	// payment profiles
 	endpointPaymentProfileCreate: endpoint{

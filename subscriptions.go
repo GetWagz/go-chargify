@@ -145,6 +145,6 @@ func GetSubscriptionMetaData(subscriptionID int64) (*MetaData, error) {
 		return nil, errors.New("could not understand server response")
 	}
 	data := &MetaData{}
-	err = mapstructure.Decode(apiBody["subscription"], data)
+	err = mapstructure.Decode(apiBody, data)
 	return data, err
 }
