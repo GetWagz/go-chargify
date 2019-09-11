@@ -130,3 +130,21 @@ func GetSubscription(subscriptionID int64) (*Subscription, error) {
 	err = mapstructure.Decode(apiBody["subscription"], subscription)
 	return subscription, err
 }
+
+// GetSubscriptionMetaData gets the subscription metadata
+func GetSubscriptionMetaData(subscriptionID int64) (*MetaData, error) {
+	ret, err := makeCall(endpoints[endpointSubscriptionGetMetaData], nil, &map[string]string{
+		"subscriptionID": fmt.Sprintf("%d", subscriptionID),
+	})
+	if err != nil {
+		return nil, err
+	}
+	// if successful, the subscription should come back in a map
+	apiBody, bodyOK := ret.Body.(map[string]interface{})
+	if !bodyOK {
+		return nil, errors.New("could not understand server response")
+	}
+	data := &MetaData{}
+	err = mapstructure.Decode(apiBody, data)
+	return data, err
+}
