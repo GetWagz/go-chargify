@@ -37,7 +37,7 @@ type Subscription struct {
 // The paymentProfileID is needed to associate the subscription with a payment profile
 func CreateSubscriptionForCustomer(customerReference, productHandle string, paymentProfileID int64, subscriptionOptions *Subscription) (*Subscription, error) {
 	body := map[string]map[string]interface{}{
-		"subscription": map[string]interface{}{
+		"subscription": {
 			"customer_reference": customerReference,
 			"product_handle":     productHandle,
 			"payment_profile_id": paymentProfileID,
@@ -98,7 +98,7 @@ func RemoveDelayedSubscriptionCancellation(subscriptionID int64) error {
 // MigrateSubscription migrates an existing subscription to a new subscription
 func MigrateSubscription(targetProductHandle string, currentSubscriptionID int64, includeTrial bool, includeInitialCharge bool, includeCoupons bool, preservePeriod bool) error {
 	body := map[string]map[string]interface{}{
-		"migration": map[string]interface{}{
+		"migration": {
 			"product_handle":         targetProductHandle,
 			"include_trial":          includeTrial,
 			"include_initial_charge": includeInitialCharge,
