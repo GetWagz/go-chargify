@@ -44,39 +44,39 @@ const (
 
 var endpoints = map[string]endpoint{
 	// customers
-	endpointCustomerCreate: endpoint{
+	endpointCustomerCreate: {
 		method:     http.MethodPost,
 		uri:        "customers",
 		pathParams: []string{},
 	},
-	endpointCustomerDelete: endpoint{
+	endpointCustomerDelete: {
 		method: http.MethodDelete,
 		uri:    "customers/{id}",
 		pathParams: []string{
 			"{id}",
 		},
 	},
-	endpointCustomersGet: endpoint{
+	endpointCustomersGet: {
 		method:     http.MethodGet,
 		uri:        "customers",
 		pathParams: []string{},
 	},
 	// billing portals
-	endpointBillingPortalEnable: endpoint{
+	endpointBillingPortalEnable: {
 		method: http.MethodPost,
 		uri:    "portal/customers/{id}/enable",
 		pathParams: []string{
 			"{id}",
 		},
 	},
-	endpointBillingPortalEnableAndInvite: endpoint{
+	endpointBillingPortalEnableAndInvite: {
 		method: http.MethodPost,
 		uri:    "portal/customers/{id}/enable?invite=1",
 		pathParams: []string{
 			"{id}",
 		},
 	},
-	endpointBillingPortalGet: endpoint{
+	endpointBillingPortalGet: {
 		method: http.MethodGet,
 		uri:    "portal/customers/{id}/management_link",
 		pathParams: []string{
@@ -84,19 +84,19 @@ var endpoints = map[string]endpoint{
 		},
 	},
 	// payment profiles
-	endpointPaymentProfileCreate: endpoint{
+	endpointPaymentProfileCreate: {
 		method:     http.MethodPost,
 		uri:        "payment_profiles",
 		pathParams: []string{},
 	},
-	endpointPaymentProfileUpdate: endpoint{
+	endpointPaymentProfileUpdate: {
 		method: http.MethodPut,
 		uri:    "payment_profiles/{paymentProfileID}",
 		pathParams: []string{
 			"{paymentProfileID}",
 		},
 	},
-	endpointPaymentProfileDelete: endpoint{
+	endpointPaymentProfileDelete: {
 		method: http.MethodDelete,
 		uri:    "/subscriptions/{subscriptionID}/payment_profiles/{paymentProfileID}",
 		pathParams: []string{
@@ -105,12 +105,12 @@ var endpoints = map[string]endpoint{
 		},
 	},
 	// product families
-	endpointProductFamilyCreate: endpoint{
+	endpointProductFamilyCreate: {
 		method:     http.MethodPost,
 		uri:        "product_families",
 		pathParams: []string{},
 	},
-	endpointProductFamilyGet: endpoint{
+	endpointProductFamilyGet: {
 		method: http.MethodGet,
 		uri:    "product_families/{id}",
 		pathParams: []string{
@@ -118,42 +118,42 @@ var endpoints = map[string]endpoint{
 		},
 	},
 	// products
-	endpointProductCreate: endpoint{
+	endpointProductCreate: {
 		method: http.MethodPost,
 		uri:    "product_families/{familyID}/products",
 		pathParams: []string{
 			"{familyID}",
 		},
 	},
-	endpointProductUpdate: endpoint{
+	endpointProductUpdate: {
 		method: http.MethodPut,
 		uri:    "products/{id}",
 		pathParams: []string{
 			"{id}",
 		},
 	},
-	endpointProductArchive: endpoint{
+	endpointProductArchive: {
 		method: http.MethodDelete,
 		uri:    "products/{id}",
 		pathParams: []string{
 			"{id}",
 		},
 	},
-	endpointProductGetByID: endpoint{
+	endpointProductGetByID: {
 		method: http.MethodGet,
 		uri:    "products/{id}",
 		pathParams: []string{
 			"{id}",
 		},
 	},
-	endpointProductGetByHandle: endpoint{
+	endpointProductGetByHandle: {
 		method: http.MethodGet,
 		uri:    "products/handle/{handle}",
 		pathParams: []string{
 			"{handle}",
 		},
 	},
-	endpointProductGetForFamily: endpoint{
+	endpointProductGetForFamily: {
 		method: http.MethodGet,
 		uri:    "product_families/{familyID}/products",
 		pathParams: []string{
@@ -161,47 +161,47 @@ var endpoints = map[string]endpoint{
 		},
 	},
 	// subscriptions
-	endpointSubscriptionCreate: endpoint{
+	endpointSubscriptionCreate: {
 		method:     http.MethodPost,
 		uri:        "subscriptions",
 		pathParams: []string{},
 	},
-	endpointSubscriptionGet: endpoint{
+	endpointSubscriptionGet: {
 		method: http.MethodGet,
 		uri:    "subscriptions/{subscriptionID}",
 		pathParams: []string{
 			"{subscriptionID}",
 		},
 	},
-	endpointSubscriptionGetMetaData: endpoint{
+	endpointSubscriptionGetMetaData: {
 		method: http.MethodGet,
 		uri:    "subscriptions/{subscriptionID}/metadata",
 		pathParams: []string{
 			"{subscriptionID}",
 		},
 	},
-	endpointSubscriptionCancelImmediately: endpoint{
+	endpointSubscriptionCancelImmediately: {
 		method: http.MethodDelete,
 		uri:    "subscriptions/{subscriptionID}",
 		pathParams: []string{
 			"{subscriptionID}",
 		},
 	},
-	endpointSubscriptionCancelDelayed: endpoint{
+	endpointSubscriptionCancelDelayed: {
 		method: http.MethodPost,
 		uri:    "subscriptions/{subscriptionID}/delayed_cancel",
 		pathParams: []string{
 			"{subscriptionID}",
 		},
 	},
-	endpointSubscriptionRemoveDelayedCancel: endpoint{
+	endpointSubscriptionRemoveDelayedCancel: {
 		method: http.MethodDelete,
 		uri:    "subscriptions/{subscriptionID}/delayed_cancel",
 		pathParams: []string{
 			"{subscriptionID}",
 		},
 	},
-	endpointSubscriptionMigrate: endpoint{
+	endpointSubscriptionMigrate: {
 		method: http.MethodPost,
 		uri:    "subscriptions/{subscriptionID}/migrations",
 		pathParams: []string{

@@ -36,6 +36,14 @@ func setup() (err error) {
 	return nil
 }
 
+// SetCredentials allows changing the credentials after initialization, such as when testing
+// and the environment isn't setup
+func SetCredentials(subdomain, apiKey string) {
+	config.subdomain = subdomain
+	config.apiKey = apiKey
+	config.root = fmt.Sprintf("https://%s.chargify.com/", config.subdomain)
+}
+
 func envHelper(variable, defaultValue string) string {
 	found := os.Getenv(variable)
 	if found == "" {

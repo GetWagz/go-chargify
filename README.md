@@ -2,12 +2,6 @@
 
 This library is a small wrapper around a subset of the Chargify API.
 
-## Installation
-
-Using your favorite dependency manager, make sure to add `github.com/getwagz/go-chargify`. For example, with dep,
-
-`dep ensure -add github.com/getwagz/go-chargify`
-
 ## Usage
 
 Usage is fairly straight-forward. See Configuration for more information about setting up and configuring the SDK.
@@ -32,10 +26,6 @@ a solution is provided in the official REST API:
 We use the following additional tools in this library, and thank the maintainers and contributors of those libraries:
 
 * [testify](https://github.com/stretchr/testify) - Makes our unit tests more readable and management
-
-## Bugs
-
-There is currently a bug in the Cyfe docs (as of 20180702). The docs mention that if onduplicate is set to replace, it would replace the data instead of accumulating. The behavior we are seeing is that passing anything for the field triggers the replacement, even if we send in a blank string.
 
 ## Implemented Endpoints
 
