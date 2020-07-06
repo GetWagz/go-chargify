@@ -13,3 +13,17 @@ We recommend you post your name as a ##, then a quick blurb about you, then your
 * Salem, NH
 
 * [My Site](https://www.kevineaton.net)
+
+## Andy Sherman
+
+* Father, Husband, Programmer, Gamer, Sports Enthusiast
+
+* Derry, NH
+
+* [My Site](https://www.andrewesherman.net)
+
+## Liz Lefavour
+
+* Dog Lover, Customer Service Manager
+
+* Manchester, NH
