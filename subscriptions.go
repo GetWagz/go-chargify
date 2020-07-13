@@ -34,14 +34,17 @@ type Subscription struct {
 // CreateSubscriptionForCustomer creates a new subscription. When creating a subscription, you must specify a product and a customer.
 // The product should be specificed by productHandle and the customer should be specified with customerReference. The subscriptionOptions
 // pointer is useful for specifying select additional options. Right now, only NextChargeAt is supported.
-// The paymentProfileID is needed to associate the subscription with a payment profile
+// The paymentProfileID is optional and is used to associate the subscription with a payment profile. If one is already setup,
+// pass in 0.
 func CreateSubscriptionForCustomer(customerReference, productHandle string, paymentProfileID int64, subscriptionOptions *Subscription) (*Subscription, error) {
 	body := map[string]map[string]interface{}{
 		"subscription": {
 			"customer_reference": customerReference,
 			"product_handle":     productHandle,
-			"payment_profile_id": paymentProfileID,
 		},
+	}
+	if paymentProfileID != 0 {
+		body["subscription"]["payment_profile_id"] = paymentProfileID
 	}
 	if subscriptionOptions != nil {
 		if subscriptionOptions.NextBillingAt != "" {
