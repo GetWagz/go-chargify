@@ -103,7 +103,7 @@ func SavePaymentProfileForCustomer(customerID int64, input *PaymentProfile) erro
 		"payment_profile": *input,
 	}
 
-	ret, err := makeCall(endpoints[endpointPaymentProfileCreate], body, nil)
+	ret, err := makeCall(endpoints[endpointPaymentProfileCreate], body, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -150,7 +150,7 @@ func DeletePaymentProfile(subscriptionID int64, profileID int64) error {
 	ret, err := makeCall(endpoints[endpointPaymentProfileDelete], nil, &map[string]string{
 		"subscriptionID": fmt.Sprintf("%v", subscriptionID),
 		"profileID":      fmt.Sprintf("%v", profileID),
-	})
+	}, nil)
 	if err != nil {
 		return err
 	}
@@ -168,7 +168,7 @@ func UpdatePaymentProfile(input *PaymentProfile) error {
 
 	ret, err := makeCall(endpoints[endpointPaymentProfileUpdate], body, &map[string]string{
 		"paymentProfileID": fmt.Sprintf("%d", input.ID),
-	})
+	}, nil)
 	if err != nil {
 		return err
 	}

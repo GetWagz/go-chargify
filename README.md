@@ -61,6 +61,7 @@ We use the following additional tools in this library, and thank the maintainers
 * [Cancel Subscription - Immediately](https://reference.chargify.com/v1/subscriptions-cancellations/cancel-subscription)
 * [Cancel Subscription - Delayed](https://reference.chargify.com/v1/subscriptions-cancellations/cancel-subscription-delayed-method-1)
 * [Remove Delayed Cancellation](https://reference.chargify.com/v1/subscriptions-cancellations/cancel-subscription-remove-delayed-method)
+* [Reactivate Subscription](https://reference.chargify.com/v1/subscriptions-reactivations/subscription-reactivation-intro)
 
 ## Hiring
 

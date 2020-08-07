@@ -46,7 +46,7 @@ func CreateCustomer(input *Customer) (*Customer, error) {
 		"customer": *input,
 	}
 
-	ret, err := makeCall(endpoints[endpointCustomerCreate], body, nil)
+	ret, err := makeCall(endpoints[endpointCustomerCreate], body, nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +64,7 @@ func CreateCustomer(input *Customer) (*Customer, error) {
 func DeleteCustomerByID(id int64) error {
 	_, err := makeCall(endpoints[endpointCustomerDelete], nil, &map[string]string{
 		"id": fmt.Sprintf("%d", id),
-	})
+	}, nil)
 	return err
 }
 
@@ -81,7 +81,7 @@ func GetCustomers(page int, sortDir string) (found []Customer, err error) {
 	ret, err := makeCall(endpoints[endpointCustomersGet], map[string]string{
 		"direction": sortDir,
 		"page":      fmt.Sprintf("%d", page),
-	}, nil)
+	}, nil, nil)
 	if err != nil || ret.HTTPCode != http.StatusOK {
 		return
 	}
@@ -106,7 +106,7 @@ func SearchForCustomerByReference(reference string) (Customer, error) {
 	var err error
 	ret, err := makeCall(endpoints[endpointCustomersGet], map[string]string{
 		"q": reference,
-	}, nil)
+	}, nil, nil)
 	if err != nil || ret.HTTPCode != http.StatusOK {
 		return found, err
 	}
@@ -128,7 +128,7 @@ func SearchForCustomersByEmail(email string) ([]Customer, error) {
 	var err error
 	ret, err := makeCall(endpoints[endpointCustomersGet], map[string]string{
 		"q": email,
-	}, nil)
+	}, nil, nil)
 	if err != nil || ret.HTTPCode != http.StatusOK {
 		return found, err
 	}

@@ -80,7 +80,7 @@ func CreateProductFamily(name, description, handle string, accountingCode string
 		"product_family": *family,
 	}
 
-	ret, err := makeCall(endpoints[endpointProductFamilyCreate], body, nil)
+	ret, err := makeCall(endpoints[endpointProductFamilyCreate], body, nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +98,7 @@ func GetProductFamily(productFamilyID int64) (*ProductFamily, error) {
 	family := &ProductFamily{}
 	ret, err := makeCall(endpoints[endpointProductFamilyGet], nil, &map[string]string{
 		"id": fmt.Sprintf("%d", productFamilyID),
-	})
+	}, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -127,7 +127,7 @@ func CreateProduct(productFamilyID int64, input *Product) error {
 
 	ret, err := makeCall(endpoints[endpointProductCreate], body, &map[string]string{
 		"familyID": fmt.Sprintf("%d", productFamilyID),
-	})
+	}, nil)
 	if err != nil {
 		return err
 	}
@@ -145,7 +145,7 @@ func GetProductByID(productID int64) (*Product, error) {
 	product := &Product{}
 	ret, err := makeCall(endpoints[endpointProductGetByID], nil, &map[string]string{
 		"id": fmt.Sprintf("%d", productID),
-	})
+	}, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -162,7 +162,7 @@ func GetProductsInFamily(productFamilyID int64) ([]Product, error) {
 	products := []Product{}
 	ret, err := makeCall(endpoints[endpointProductGetForFamily], nil, &map[string]string{
 		"familyID": fmt.Sprintf("%d", productFamilyID),
-	})
+	}, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -186,7 +186,7 @@ func GetProductByHandle(handle string) (*Product, error) {
 	product := &Product{}
 	ret, err := makeCall(endpoints[endpointProductGetByHandle], nil, &map[string]string{
 		"handle": handle,
-	})
+	}, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -206,7 +206,7 @@ func UpdateProduct(productID int64, input *Product) error {
 
 	_, err := makeCall(endpoints[endpointProductUpdate], body, &map[string]string{
 		"productID": fmt.Sprintf("%d", productID),
-	})
+	}, nil)
 	return err
 }
 
@@ -214,7 +214,7 @@ func UpdateProduct(productID int64, input *Product) error {
 func ArchiveProduct(productID int64) error {
 	_, err := makeCall(endpoints[endpointProductArchive], nil, &map[string]string{
 		"id": fmt.Sprintf("%d", productID),
-	})
+	}, nil)
 	return err
 }
 

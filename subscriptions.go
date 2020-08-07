@@ -2,7 +2,7 @@ package chargify
 
 import (
 	"errors"
-	"fmt"
+	"strconv"
 
 	"github.com/mitchellh/mapstructure"
 )
@@ -34,8 +34,7 @@ type Subscription struct {
 // CreateSubscriptionForCustomer creates a new subscription. When creating a subscription, you must specify a product and a customer.
 // The product should be specificed by productHandle and the customer should be specified with customerReference. The subscriptionOptions
 // pointer is useful for specifying select additional options. Right now, only NextChargeAt is supported.
-// The paymentProfileID is optional and is used to associate the subscription with a payment profile. If one is already setup,
-// pass in 0.
+// The paymentProfileID is used to associate the subscription with a payment profile.
 func CreateSubscriptionForCustomer(customerReference, productHandle string, paymentProfileID int64, subscriptionOptions *Subscription) (*Subscription, error) {
 	body := map[string]map[string]interface{}{
 		"subscription": {
@@ -52,7 +51,7 @@ func CreateSubscriptionForCustomer(customerReference, productHandle string, paym
 		}
 	}
 
-	ret, err := makeCall(endpoints[endpointSubscriptionCreate], body, nil)
+	ret, err := makeCall(endpoints[endpointSubscriptionCreate], body, nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -72,8 +71,8 @@ func CancelSubscription(subscriptionID int64, cancelImmediately bool, reasonCode
 	if cancelImmediately {
 		// it is a delete so no body
 		_, err = makeCall(endpoints[endpointSubscriptionCancelImmediately], nil, &map[string]string{
-			"subscriptionID": fmt.Sprintf("%d", subscriptionID),
-		})
+			"subscriptionID": strconv.FormatInt(subscriptionID, 10),
+		}, nil)
 	} else {
 		// if the reason info is set, then add it
 		reason := map[string]string{}
@@ -84,8 +83,8 @@ func CancelSubscription(subscriptionID int64, cancelImmediately bool, reasonCode
 			}
 		}
 		_, err = makeCall(endpoints[endpointSubscriptionCancelDelayed], reason, &map[string]string{
-			"subscriptionID": fmt.Sprintf("%d", subscriptionID),
-		})
+			"subscriptionID": strconv.FormatInt(subscriptionID, 10),
+		}, nil)
 	}
 	return err
 }
@@ -93,9 +92,47 @@ func CancelSubscription(subscriptionID int64, cancelImmediately bool, reasonCode
 // RemoveDelayedSubscriptionCancellation removes a delayed cancellation request, ensuring the subscription does not cancel
 func RemoveDelayedSubscriptionCancellation(subscriptionID int64) error {
 	_, err := makeCall(endpoints[endpointSubscriptionRemoveDelayedCancel], nil, &map[string]string{
-		"subscriptionID": fmt.Sprintf("%d", subscriptionID),
-	})
+		"subscriptionID": strconv.FormatInt(subscriptionID, 10),
+	}, nil)
 	return err
+}
+
+// ReactivateSubscription reactivates a cancelled subscription. Note that Chargify takes the parameters and puts them in the query string
+// rather than in the request body. This is an odd design choice. Also note that the concept of a boolean is fluid in the docs; sometimes it's true/false, sometimes
+// it's 1/0, sometimes it's true/false/object.
+func ReactivateSubscription(subscriptionID int64, includeTrial, preserveBalance, resume, requireResume bool, couponCode string) (*Subscription, error) {
+	queryParams := map[string]string{
+		"include_trial":    "0",
+		"preserve_balance": "0",
+		"resume":           "false",
+		"coupon_code":      couponCode,
+	}
+	if includeTrial {
+		queryParams["include_trial"] = "1"
+	}
+	if preserveBalance {
+		queryParams["preserve_balance"] = "1"
+	}
+	if requireResume {
+		queryParams["resume"] = "{ require_resume: true }" // :(
+	} else if resume {
+		queryParams["resume"] = "true"
+	}
+
+	ret, err := makeCall(endpoints[endpointSubscriptionReactivate], nil, &map[string]string{
+		"subscriptionID": strconv.FormatInt(subscriptionID, 10),
+	}, &queryParams)
+	if err != nil {
+		return nil, err
+	}
+	// if successful, the subscription should come back in a map["subscription"]Subscription format
+	apiBody, bodyOK := ret.Body.(map[string]interface{})
+	if !bodyOK {
+		return nil, errors.New("could not understand server response")
+	}
+	subscription := &Subscription{}
+	err = mapstructure.Decode(apiBody["subscription"], subscription)
+	return subscription, err
 }
 
 // MigrateSubscription migrates an existing subscription to a new subscription
@@ -111,16 +148,16 @@ func MigrateSubscription(targetProductHandle string, currentSubscriptionID int64
 	}
 
 	_, err := makeCall(endpoints[endpointSubscriptionMigrate], body, &map[string]string{
-		"subscriptionID": fmt.Sprintf("%d", currentSubscriptionID),
-	})
+		"subscriptionID": strconv.FormatInt(currentSubscriptionID, 10),
+	}, nil)
 	return err
 }
 
 // GetSubscription gets a subscription. The docs show it comes back as an array, but as of this implementation it comes back as a map
 func GetSubscription(subscriptionID int64) (*Subscription, error) {
 	ret, err := makeCall(endpoints[endpointSubscriptionGet], nil, &map[string]string{
-		"subscriptionID": fmt.Sprintf("%d", subscriptionID),
-	})
+		"subscriptionID": strconv.FormatInt(subscriptionID, 10),
+	}, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -137,8 +174,8 @@ func GetSubscription(subscriptionID int64) (*Subscription, error) {
 // GetSubscriptionMetaData gets the subscription metadata
 func GetSubscriptionMetaData(subscriptionID int64) (*MetaData, error) {
 	ret, err := makeCall(endpoints[endpointSubscriptionGetMetaData], nil, &map[string]string{
-		"subscriptionID": fmt.Sprintf("%d", subscriptionID),
-	})
+		"subscriptionID": strconv.FormatInt(subscriptionID, 10),
+	}, nil)
 	if err != nil {
 		return nil, err
 	}

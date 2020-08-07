@@ -19,7 +19,12 @@ type APIReturn struct {
 	Body       interface{} `json:"body"`
 }
 
-func makeCall(end endpoint, body interface{}, pathParams *map[string]string) (ret APIReturn, err error) {
+// makeCall completes a raw HTTP request. The end endpoint parameter is one of the endpoints listed in the endpoints.go file and contains information
+// related to how to form the call. The body is an interface{} that gets past into the SetBody() call of the request (for POST, PUT, and PATCH) or converted
+// into a map[string]string and set as the query params (for GET). The pathParams overrides the path place holders found in the endpoint. The overrideQueryParams
+// is a *map[string]string that allows overriding the default behavior of the body for PUT, POST, or PATCH commands. THis is unfortunately needed because some calls
+// (such as subscriptionReactivate) takes parameters in the query string rather than the body.
+func makeCall(end endpoint, body interface{}, pathParams *map[string]string, overrideQueryParams *map[string]string) (ret APIReturn, err error) {
 	if config.subdomain == "" || config.apiKey == "" {
 		return ret, errors.New("configuration is invalid for chargify")
 	}
@@ -36,6 +41,15 @@ func makeCall(end endpoint, body interface{}, pathParams *map[string]string) (re
 		SetHeader("Accept", "application/json").
 		SetHeader("Content-Type", "application/json").
 		SetBasicAuth(config.apiKey, "x")
+
+	if overrideQueryParams != nil {
+		for k, v := range *overrideQueryParams {
+			if v == "" {
+				delete(*overrideQueryParams, k)
+			}
+		}
+		httpRequest.SetQueryParams(*overrideQueryParams)
+	}
 
 	if end.method == http.MethodGet {
 		if body != nil {

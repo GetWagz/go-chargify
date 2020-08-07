@@ -26,11 +26,11 @@ func EnableBillingPortal(customerID int64, sendInvitation bool) error {
 	if sendInvitation {
 		_, err = makeCall(endpoints[endpointBillingPortalEnableAndInvite], nil, &map[string]string{
 			"id": fmt.Sprintf("%d", customerID),
-		})
+		}, nil)
 	} else {
 		_, err = makeCall(endpoints[endpointBillingPortalEnable], nil, &map[string]string{
 			"id": fmt.Sprintf("%d", customerID),
-		})
+		}, nil)
 	}
 	return err
 
@@ -40,7 +40,7 @@ func EnableBillingPortal(customerID int64, sendInvitation bool) error {
 func GetBillingPortal(customerID int64) (*BillingPortal, error) {
 	ret, err := makeCall(endpoints[endpointBillingPortalGet], nil, &map[string]string{
 		"id": fmt.Sprintf("%d", customerID),
-	})
+	}, nil)
 	if err != nil {
 		return nil, err
 	}
