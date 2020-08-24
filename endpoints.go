@@ -40,7 +40,7 @@ const (
 
 	endpointSubscriptionMigrate    = "subscription_migrate"
 	endpointSubscriptionUpdateNow  = "subscription_update_now"
-	endpointSubscriptionReactivate = "subscription_update_now"
+	endpointSubscriptionReactivate = "subscription_reactivate"
 )
 
 var endpoints = map[string]endpoint{
