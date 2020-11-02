@@ -1,5 +1,7 @@
 # Chargify SDK
 
+[![Downloads](https://img.shields.io/github/downloads/GetWagz/go-chargify/total.svg)](https://github.com/GetWagz/go-chargify/releases)
+
 This library is a small wrapper around a subset of the Chargify API.
 
 ## Usage
