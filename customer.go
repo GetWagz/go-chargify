@@ -100,9 +100,30 @@ func GetCustomers(page int, sortDir string) (found []Customer, err error) {
 	return found, nil
 }
 
-// SearchForCustomerByReference searches for a customer by it's reference value
+// SearchForCustomerByReference searches for a customer by it's reference value. It first performs the large search then
+// looks for the substring in the returned values
 func SearchForCustomerByReference(reference string) (Customer, error) {
 	found := Customer{}
+
+	customers, err := SearchForCustomersByReference(reference)
+	if err != nil {
+		return found, err
+	}
+	for i := range customers {
+		if customers[i].Reference == reference {
+			found = customers[i]
+			break
+		}
+	}
+	if found.ID == 0 {
+		return found, errors.New("customer not found")
+	}
+	return found, nil
+}
+
+// SearchForCustomersByReference searches all of the customers for a specific reference
+func SearchForCustomersByReference(reference string) ([]Customer, error) {
+	found := []Customer{}
 	var err error
 	ret, err := makeCall(endpoints[endpointCustomersGet], map[string]string{
 		"q": reference,
@@ -114,10 +135,14 @@ func SearchForCustomerByReference(reference string) (Customer, error) {
 	// so, Chargify violates OWASP best practices by returning these in an array
 	temp := ret.Body.([]interface{})
 	for i := range temp {
+		cust := Customer{}
 		entry := temp[i].(map[string]interface{})
 		custRaw := entry["customer"]
-		err = mapstructure.Decode(custRaw, &found)
-		break
+		err = mapstructure.Decode(custRaw, &cust)
+		if err != nil {
+			return []Customer{}, err
+		}
+		found = append(found, cust)
 	}
 	return found, err
 }
