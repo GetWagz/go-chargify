@@ -220,9 +220,16 @@ var endpoints = map[string]endpoint{
 	},
 	endpointGetInvoice: {
 		method: http.MethodPost,
-		uri:    "invoices/{userID}",
+		uri:    "invoices/{invoiceID}",
 		pathParams: []string{
-			"{userID}",
+			"{invoiceID}",
+		},
+	},
+	endpointRefundInvoice: {
+		method: http.MethodPost,
+		uri:    "invoices/{invoiceID}/refunds",
+		pathParams: []string{
+			"{invoiceID}",
 		},
 	},
 }
