@@ -41,6 +41,8 @@ const (
 	endpointSubscriptionMigrate   = "subscription_migrate"
 	endpointSubscriptionUpdateNow = "subscription_update_now"
 
+	endpointSubscriptionRefund = "subscription_refund"
+
 	endpointGetInvoices   = "invoices_get"
 	endpointGetInvoice    = "invoice_get"
 	endpointRefundInvoice = "invoice_refund"
@@ -208,6 +210,13 @@ var endpoints = map[string]endpoint{
 	endpointSubscriptionMigrate: {
 		method: http.MethodPost,
 		uri:    "subscriptions/{subscriptionID}/migrations",
+		pathParams: []string{
+			"{subscriptionID}",
+		},
+	},
+	endpointSubscriptionRefund: {
+		method: http.MethodPost,
+		uri:    "subscriptions/{subscriptionID}/refunds",
 		pathParams: []string{
 			"{subscriptionID}",
 		},

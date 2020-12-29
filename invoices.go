@@ -40,20 +40,44 @@ type Refund struct {
 // InvoiceQueryParams are a collection of implemented query params to pass in to the invoice
 // get call
 type InvoiceQueryParams struct {
-	StartDate      *string `json:"start_date,omitempty" mapstructure:"start_date"`
-	EndDate        *string `json:"end_date,omitempty" mapstructure:"end_date"`
-	Status         *string `json:"status,omitempty" mapstructure:"status"`
-	SubscriptionID *int64  `json:"subscription_id,omitempty" mapstructure:"subscription_id"`
-	Page           *int64  `json:"page,omitempty" mapstructure:"page"`
-	PerPage        *int64  `json:"per_page,omitempty" mapstructure:"per_page"`
-	Direction      *string `json:"direction,omitempty" mapstructure:"direction"`
+	StartDate      string `json:"start_date,omitempty" mapstructure:"start_date"`
+	EndDate        string `json:"end_date,omitempty" mapstructure:"end_date"`
+	Status         string `json:"status,omitempty" mapstructure:"status"`
+	SubscriptionID int64  `json:"subscription_id,omitempty" mapstructure:"subscription_id"`
+	Page           int64  `json:"page,omitempty" mapstructure:"page"`
+	PerPage        int64  `json:"per_page,omitempty" mapstructure:"per_page"`
+	Direction      string `json:"direction,omitempty" mapstructure:"direction"`
 }
 
 // GetInvoices searched for invoices based upon passed-in params
 func GetInvoices(queryParams *InvoiceQueryParams) ([]Invoice, error) {
 	invoices := []Invoice{}
 
-	ret, err := makeCall(endpoints[endpointGetInvoices], queryParams, &map[string]string{})
+	// massage the params into map[string]string
+	params := map[string]string{}
+	if queryParams != nil && queryParams.StartDate != "" {
+		params["start_date"] = queryParams.StartDate
+	}
+	if queryParams != nil && queryParams.EndDate != "" {
+		params["end_date"] = queryParams.EndDate
+	}
+	if queryParams != nil && queryParams.Status != "" {
+		params["status"] = queryParams.Status
+	}
+	if queryParams != nil && queryParams.SubscriptionID != 0 {
+		params["subscription_id"] = fmt.Sprintf("%d", queryParams.SubscriptionID)
+	}
+	if queryParams != nil && queryParams.Page != -1 {
+		params["page"] = fmt.Sprintf("%d", queryParams.Page)
+	}
+	if queryParams != nil && queryParams.PerPage != 0 {
+		params["per_page"] = fmt.Sprintf("%d", queryParams.PerPage)
+	}
+	if queryParams != nil && queryParams.Direction != "" {
+		params["direction"] = queryParams.Direction
+	}
+
+	ret, err := makeCall(endpoints[endpointGetInvoices], params, &map[string]string{})
 	if err != nil {
 		return invoices, err
 	}

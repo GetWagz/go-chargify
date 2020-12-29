@@ -151,3 +151,30 @@ func GetSubscriptionMetaData(subscriptionID int64) (*MetaData, error) {
 	err = mapstructure.Decode(apiBody, data)
 	return data, err
 }
+
+// RefundSubscriptionPayment refunds a specific payment for a subscription. This is supposedly deprecated to support relationship
+// invoicing
+func RefundSubscriptionPayment(subscriptionID string, paymentID string, amount string, memo string) (*Refund, error) {
+	body := map[string]map[string]string{
+		"refund": {
+			"payment_id": paymentID,
+			"amount":     amount,
+			"memo":       memo,
+		},
+	}
+
+	ret, err := makeCall(endpoints[endpointSubscriptionRefund], body, &map[string]string{
+		"subscriptionID": subscriptionID,
+	})
+	if err != nil {
+		return nil, err
+	}
+	// if successful, the subscription should come back in a map["refund"] format
+	apiBody, bodyOK := ret.Body.(map[string]interface{})
+	if !bodyOK {
+		return nil, errors.New("could not understand server response")
+	}
+	refund := &Refund{}
+	err = mapstructure.Decode(apiBody["refund"], refund)
+	return refund, err
+}
