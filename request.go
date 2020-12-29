@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/go-resty/resty"
+	"github.com/go-resty/resty/v2"
 )
 
 // APIReturn represents the return of the API calls
@@ -32,7 +32,7 @@ func makeCall(end endpoint, body interface{}, pathParams *map[string]string) (re
 	url := fmt.Sprintf("%s%s", config.root, endpointURI)
 	var response *resty.Response
 
-	httpRequest := resty.R().
+	httpRequest := resty.New().R().
 		SetHeader("Accept", "application/json").
 		SetHeader("Content-Type", "application/json").
 		SetBasicAuth(config.apiKey, "x")
