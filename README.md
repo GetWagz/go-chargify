@@ -2,6 +2,8 @@
 
 This library is a small wrapper around a subset of the Chargify API.
 
+*Note: As of December 28th, 2020, this library is no longer actively maintained. New maintainers are welcome to email the Wagz engineering team to take lead over the library.*
+
 ## Usage
 
 Usage is fairly straight-forward. See Configuration for more information about setting up and configuring the SDK.

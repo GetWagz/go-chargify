@@ -97,6 +97,29 @@ var (
 	VaultWireCard VaultMethod = "wirecard"
 )
 
+// Payment represents a single payment on an invoice, for example
+type Payment struct {
+	TransactionTime string        `json:"transaction_time" mapstructure:"transaction_time"`
+	Memo            string        `json:"memo" mapstructure:"memo"`
+	OriginalAmount  string        `json:"original_amount" mapstructure:"original_amount"`
+	AppliedAmount   string        `json:"applied_amount" mapstructure:"applied_amount"`
+	TransactionID   int64         `json:"transaction_id" mapstructure:"transaction_id"`
+	Prepayment      bool          `json:"prepayment" mapstructure:"prepayment"`
+	PaymentMethod   PaymentMethod `json:"payment_method" mapstructure:"payment_method"`
+}
+
+// PaymentMethod represents a payment method, found on a payment struct
+type PaymentMethod struct {
+	Details          string `json:"details" mapstructure:"details"`
+	Kind             string `json:"kind" mapstructure:"kind"`
+	Memo             string `json:"memo" mapstructure:"memo"`
+	PaymentType      string `json:"payment_type" mapstructure:"payment_type"`
+	CardBrand        string `json:"card_brand" mapstructure:"card_brand"`
+	CardExpiration   string `json:"card_expiration" mapstructure:"card_expiration"`
+	LastFour         string `json:"last_four" mapstructure:"last_four"`
+	MaskedCardNumber string `json:"masked_card_number" mapstructure:"masked_card_number"`
+}
+
 // SavePaymentProfileForCustomer saves a new payment profile. Note that this is a raw save; for ease of use it may be better to use one of the other SavePaymentProfile* methods
 func SavePaymentProfileForCustomer(customerID int64, input *PaymentProfile) error {
 	body := map[string]PaymentProfile{
