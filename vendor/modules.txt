@@ -1,7 +1,7 @@
 # github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
-# github.com/go-resty/resty v1.12.0 => gopkg.in/resty.v1 v1.11.0
-github.com/go-resty/resty
+# github.com/go-resty/resty/v2 v2.3.0
+github.com/go-resty/resty/v2
 # github.com/mitchellh/mapstructure v1.1.2
 github.com/mitchellh/mapstructure
 # github.com/pmezard/go-difflib v1.0.0
@@ -9,5 +9,5 @@ github.com/pmezard/go-difflib/difflib
 # github.com/stretchr/testify v1.3.0
 github.com/stretchr/testify/assert
 github.com/stretchr/testify/require
-# golang.org/x/net v0.0.0-20190313082753-5c2c250b6a70
+# golang.org/x/net v0.0.0-20200513185701-a91f0712d120
 golang.org/x/net/publicsuffix
