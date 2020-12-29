@@ -10,43 +10,43 @@ import (
 // Invoice is a relationship invoice on Chargify. Note that not all fields are currently implemented, as there
 // are over 145 properties on an invoice
 type Invoice struct {
-	UID               string
-	SiteID            int64
-	CustomerID        int64
-	SubscriptionID    int64
-	Number            string // oof
-	SequenceNumber    int64
-	IssueDate         string
-	DueDate           string
-	PaidDate          string
-	Status            string
-	Currency          string
-	ProductName       string
-	ProductFamilyName string
-	Customer          Customer
-	Payments          []Payment
-	Refunds           []Refund
+	UID               string    `json:"uid,omitempty" mapstructure:"uid"`
+	SiteID            int64     `json:"site_id,omitempty" mapstructure:"site_id"`
+	CustomerID        int64     `json:"customer_id,omitempty" mapstructure:"customer_id"`
+	SubscriptionID    int64     `json:"subscription_id,omitempty" mapstructure:"subscription_id"`
+	Number            string    `json:"number,omitempty" mapstructure:"number"`
+	SequenceNumber    int64     `json:"sequence_number,omitempty" mapstructure:"sequence_number"`
+	IssueDate         string    `json:"issue_date,omitempty" mapstructure:"issue_date"`
+	DueDate           string    `json:"due_date,omitempty" mapstructure:"due_date"`
+	PaidDate          string    `json:"paid_date,omitempty" mapstructure:"paid_date"`
+	Status            string    `json:"status,omitempty" mapstructure:"status"`
+	Currency          string    `json:"currency,omitempty" mapstructure:"currency"`
+	ProductName       string    `json:"product_name,omitempty" mapstructure:"product_name"`
+	ProductFamilyName string    `json:"product_family_name,omitempty" mapstructure:"product_family_name"`
+	Customer          Customer  `json:"customer,omitempty" mapstructure:"customer"`
+	Payments          []Payment `json:"payments,omitempty" mapstructure:"payments"`
+	Refunds           []Refund  `json:"refunds,omitempty" mapstructure:"refunds"`
 }
 
 // Refund is a single refund issued against an invoice
 type Refund struct {
-	TransactionID  int64
-	PaymentID      int64
-	Memo           string
-	OriginalAmount string
-	AppliedAmount  string
+	TransactionID  int64  `json:"transaction_id,omitempty" mapstructure:"transaction_id"`
+	PaymentID      int64  `json:"payment_id,omitempty" mapstructure:"payment_id"`
+	Memo           string `json:"memo,omitempty" mapstructure:"memo"`
+	OriginalAmount string `json:"original_amount,omitempty" mapstructure:"original_amount"`
+	AppliedAmount  string `json:"applied_amount,omitempty" mapstructure:"applied_amount"`
 }
 
 // InvoiceQueryParams are a collection of implemented query params to pass in to the invoice
 // get call
 type InvoiceQueryParams struct {
-	StartDate      *string `json:"start_date,omit_empty" mapstructure:"start_date"`
-	EndDate        *string `json:"end_date,omit_empty" mapstructure:"end_date"`
-	Status         *string `json:"status,omit_empty" mapstructure:"status"`
-	SubscriptionID *int64  `json:"subscription_id,omit_empty" mapstructure:"subscription_id"`
-	Page           *int64  `json:"page,omit_empty" mapstructure:"page"`
-	PerPage        *int64  `json:"per_page,omit_empty" mapstructure:"per_page"`
-	Direction      *string `json:"direction,omit_empty" mapstructure:"direction"`
+	StartDate      *string `json:"start_date,omitempty" mapstructure:"start_date"`
+	EndDate        *string `json:"end_date,omitempty" mapstructure:"end_date"`
+	Status         *string `json:"status,omitempty" mapstructure:"status"`
+	SubscriptionID *int64  `json:"subscription_id,omitempty" mapstructure:"subscription_id"`
+	Page           *int64  `json:"page,omitempty" mapstructure:"page"`
+	PerPage        *int64  `json:"per_page,omitempty" mapstructure:"per_page"`
+	Direction      *string `json:"direction,omitempty" mapstructure:"direction"`
 }
 
 // GetInvoices searched for invoices based upon passed-in params
