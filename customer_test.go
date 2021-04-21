@@ -24,6 +24,18 @@ func TestCustomerCreation(t *testing.T) {
 	assert.Equal(t, input.Reference, customer.Reference)
 
 	found, err := GetCustomers(1, "asc")
+
+	updatedInput := Customer{
+		ID:      customer.ID,
+		Address: "123 Main Street",
+		City:    "Portsmouth",
+		State:   "NH",
+		Zip:     "03801",
+	}
+
+	err = UpdateCustomer(&updatedInput)
+	assert.Nil(t, err)
+
 	assert.Nil(t, err)
 	assert.NotZero(t, len(found))
 

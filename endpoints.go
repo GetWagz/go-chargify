@@ -15,6 +15,7 @@ const (
 
 	endpointCustomerCreate = "customer_create"
 	endpointCustomerDelete = "customer_delete"
+	endpointCustomerUpdate = "customer_update"
 	endpointCustomersGet   = "customers_get"
 
 	endpointPaymentProfileCreate = "payment_profile_create"
@@ -57,6 +58,13 @@ var endpoints = map[string]endpoint{
 	},
 	endpointCustomerDelete: {
 		method: http.MethodDelete,
+		uri:    "customers/{id}",
+		pathParams: []string{
+			"{id}",
+		},
+	},
+	endpointCustomerUpdate: {
+		method: http.MethodPut,
 		uri:    "customers/{id}",
 		pathParams: []string{
 			"{id}",

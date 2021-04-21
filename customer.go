@@ -60,6 +60,29 @@ func CreateCustomer(input *Customer) (*Customer, error) {
 	return customer, err
 }
 
+// UpdateCustomer updates a customer in chargify
+func UpdateCustomer(input *Customer) error {
+	body := map[string]Customer{
+		"customer": *input,
+	}
+	ret, err := makeCall(endpoints[endpointCustomerUpdate], body, &map[string]string{
+		"id": fmt.Sprintf("%d", input.ID),
+	})
+	if err != nil {
+		return err
+	}
+	if ret.HTTPCode != http.StatusOK {
+		return errors.New("could not update that customer")
+	}
+
+	apiBody, bodyOK := ret.Body.(map[string]interface{})
+	if !bodyOK {
+		return errors.New("could not understand server response")
+	}
+	err = mapstructure.Decode(apiBody["customer"], input)
+	return err
+}
+
 // DeleteCustomerByID deletes a customer from chargify permanently
 func DeleteCustomerByID(id int64) error {
 	_, err := makeCall(endpoints[endpointCustomerDelete], nil, &map[string]string{
