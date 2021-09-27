@@ -34,6 +34,7 @@ const (
 
 	endpointSubscriptionCreate              = "subscription_create"
 	endpointSubscriptionGet                 = "subscription_get"
+	endpointSubscriptionUpdate              = "subscription_update"
 	endpointSubscriptionGetMetaData         = "subscription_get_meta_data"
 	endpointSubscriptionCancelImmediately   = "subscription_cancel_immediately"
 	endpointSubscriptionCancelDelayed       = "subscription_cancel_delayed"
@@ -182,6 +183,13 @@ var endpoints = map[string]endpoint{
 	},
 	endpointSubscriptionGet: {
 		method: http.MethodGet,
+		uri:    "subscriptions/{subscriptionID}",
+		pathParams: []string{
+			"{subscriptionID}",
+		},
+	},
+	endpointSubscriptionUpdate: {
+		method: http.MethodPut,
 		uri:    "subscriptions/{subscriptionID}",
 		pathParams: []string{
 			"{subscriptionID}",
