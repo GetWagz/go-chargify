@@ -90,6 +90,19 @@ func CancelSubscription(subscriptionID int64, cancelImmediately bool, reasonCode
 	return err
 }
 
+// UpdateSubscription updates a subscription for a customer
+func UpdateSubscription(subscriptionID int64, productHandle string) error {
+	body := map[string]map[string]interface{}{
+		"subscription": {
+			"product_handle": productHandle,
+		},
+	}
+	_, err := makeCall(endpoints[endpointSubscriptionUpdate], body, &map[string]string{
+		"subscriptionID": fmt.Sprintf("%d", subscriptionID),
+	})
+	return err
+}
+
 // RemoveDelayedSubscriptionCancellation removes a delayed cancellation request, ensuring the subscription does not cancel
 func RemoveDelayedSubscriptionCancellation(subscriptionID int64) error {
 	_, err := makeCall(endpoints[endpointSubscriptionRemoveDelayedCancel], nil, &map[string]string{

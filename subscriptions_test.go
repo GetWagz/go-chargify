@@ -26,6 +26,9 @@ func TestSubscriptionCRUD(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, found)
 
+	err = UpdateSubscription(subscription.ID, "33")
+	assert.Nil(t, err)
+
 	err = CancelSubscription(subscription.ID, false, "MY_REASON", "Testing")
 	require.Nil(t, err)
 

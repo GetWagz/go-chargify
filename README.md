@@ -60,6 +60,7 @@ We use the following additional tools in this library, and thank the maintainers
 ### Subscriptions
 
 * [Create Subscription](https://reference.chargify.com/v1/subscriptions/create-subscription)
+* [Update Subscription](https://reference.chargify.com/v1/subscriptions-product-changes-migrations-upgrades-downgrades)
 * [Cancel Subscription - Immediately](https://reference.chargify.com/v1/subscriptions-cancellations/cancel-subscription)
 * [Cancel Subscription - Delayed](https://reference.chargify.com/v1/subscriptions-cancellations/cancel-subscription-delayed-method-1)
 * [Remove Delayed Cancellation](https://reference.chargify.com/v1/subscriptions-cancellations/cancel-subscription-remove-delayed-method)
