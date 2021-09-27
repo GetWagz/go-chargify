@@ -54,30 +54,30 @@ func GetInvoices(queryParams *InvoiceQueryParams) ([]Invoice, error) {
 	invoices := []Invoice{}
 
 	// massage the params into map[string]string
-	params := map[string]string{}
+	body := map[string]string{}
 	if queryParams != nil && queryParams.StartDate != "" {
-		params["start_date"] = queryParams.StartDate
+		body["start_date"] = queryParams.StartDate
 	}
 	if queryParams != nil && queryParams.EndDate != "" {
-		params["end_date"] = queryParams.EndDate
+		body["end_date"] = queryParams.EndDate
 	}
 	if queryParams != nil && queryParams.Status != "" {
-		params["status"] = queryParams.Status
+		body["status"] = queryParams.Status
 	}
 	if queryParams != nil && queryParams.SubscriptionID != 0 {
-		params["subscription_id"] = fmt.Sprintf("%d", queryParams.SubscriptionID)
+		body["subscription_id"] = fmt.Sprintf("%d", queryParams.SubscriptionID)
 	}
 	if queryParams != nil && queryParams.Page != -1 {
-		params["page"] = fmt.Sprintf("%d", queryParams.Page)
+		body["page"] = fmt.Sprintf("%d", queryParams.Page)
 	}
 	if queryParams != nil && queryParams.PerPage != 0 {
-		params["per_page"] = fmt.Sprintf("%d", queryParams.PerPage)
+		body["per_page"] = fmt.Sprintf("%d", queryParams.PerPage)
 	}
 	if queryParams != nil && queryParams.Direction != "" {
-		params["direction"] = queryParams.Direction
+		body["direction"] = queryParams.Direction
 	}
 
-	ret, err := makeCall(endpoints[endpointGetInvoices], params, &map[string]string{})
+	ret, err := makeCall(endpoints[endpointGetInvoices], &map[string]string{}, body)
 	if err != nil {
 		return invoices, err
 	}
@@ -104,9 +104,9 @@ func GetInvoices(queryParams *InvoiceQueryParams) ([]Invoice, error) {
 func GetInvoiceByID(invoiceID int64) (*Invoice, error) {
 	invoice := &Invoice{}
 
-	ret, err := makeCall(endpoints[endpointGetInvoice], nil, &map[string]string{
+	ret, err := makeCall(endpoints[endpointGetInvoice], &map[string]string{
 		"invoiceID": fmt.Sprintf("%d", invoiceID),
-	})
+	}, nilBody)
 	if err != nil {
 		return invoice, err
 	}
@@ -130,7 +130,7 @@ func GetInvoiceByID(invoiceID int64) (*Invoice, error) {
 func RefundInvoice(invoiceID, amount, memo string, paymentID int64, external, applyCredit, voidInvoice bool) (*Invoice, error) {
 	invoice := &Invoice{}
 
-	params := map[string]map[string]string{
+	body := map[string]map[string]string{
 		"refund": {
 			"amount":       amount,
 			"memo":         memo,
@@ -141,9 +141,9 @@ func RefundInvoice(invoiceID, amount, memo string, paymentID int64, external, ap
 		},
 	}
 
-	ret, err := makeCall(endpoints[endpointRefundInvoice], params, &map[string]string{
+	ret, err := makeCall(endpoints[endpointRefundInvoice], &map[string]string{
 		"invoiceID": invoiceID,
-	})
+	}, body)
 	if err != nil {
 		return invoice, err
 	}

@@ -13,24 +13,36 @@ const (
 	endpointBillingPortalEnableAndInvite = "billing_portal_enable_and_invite"
 	endpointBillingPortalGet             = "billing_portal_get"
 
-	endpointCustomerCreate = "customer_create"
-	endpointCustomerDelete = "customer_delete"
-	endpointCustomerUpdate = "customer_update"
-	endpointCustomersGet   = "customers_get"
+	endpointCustomerCreate            = "customer_create"
+	endpointCustomerDelete            = "customer_delete"
+	endpointCustomerUpdate            = "customer_update"
+	endpointCustomersGet              = "customers_get"
+	endpointCustomerGet               = "customer_get"
+	endpointCustomerByReferenceGet    = "customer_get_by_reference"
+	endpointCustomerSubscriptionsList = "customer_subscriptions_list"
+
+	endpointEvents             = "events"
+	endpointEventsCount        = "events_count"
+	endpointEventIngestion     = "events_ingestion"
+	endpointBulkEventIngestion = "events_bulk_ingestion"
 
 	endpointPaymentProfileCreate = "payment_profile_create"
 	endpointPaymentProfileDelete = "payment_profile_delete"
 	endpointPaymentProfileUpdate = "payment_profile_update"
 
-	endpointProductFamilyCreate = "product_family_create"
-	endpointProductFamilyGet    = "product_family_get"
-
-	endpointProductCreate       = "product_create"
-	endpointProductUpdate       = "product_update"
-	endpointProductArchive      = "product_archive"
-	endpointProductGetByID      = "product_get_by_id"
-	endpointProductGetByHandle  = "product_get_by_handle"
-	endpointProductGetForFamily = "product_get_for_family"
+	endpointProductFamilyCreate               = "product_family_create"
+	endpointProductFamilyGet                  = "product_family_get"
+	endpointProductFamilyProductsGet          = "product_family_products_get"
+	endpointProductFamiliesGet                = "product_families_get"
+	endpointProductFamilyComponentsGet        = "product_family_components_get"
+	endpointProductFamilyComponentByIdGet     = "product_family_component_by_id_get"
+	endpointProductFamilyComponentByHandleGet = "product_family_component_by_handle_get"
+	endpointProductCreate                     = "product_create"
+	endpointProductUpdate                     = "product_update"
+	endpointProductArchive                    = "product_archive"
+	endpointProductGetByID                    = "product_get_by_id"
+	endpointProductGetByHandle                = "product_get_by_handle"
+	endpointProductGetForFamily               = "product_get_for_family"
 
 	endpointSubscriptionCreate              = "subscription_create"
 	endpointSubscriptionGet                 = "subscription_get"
@@ -42,7 +54,9 @@ const (
 	endpointSubscriptionMigrate   = "subscription_migrate"
 	endpointSubscriptionUpdateNow = "subscription_update_now"
 
-	endpointSubscriptionRefund = "subscription_refund"
+	endpointSubscriptionRefund           = "subscription_refund"
+	endpointSubscriptionEvents           = "subscription_events"
+	endpointSubscriptionComponentsUsages = "subscription_components_usages"
 
 	endpointGetInvoices   = "invoices_get"
 	endpointGetInvoice    = "invoice_get"
@@ -68,6 +82,52 @@ var endpoints = map[string]endpoint{
 		uri:    "customers/{id}",
 		pathParams: []string{
 			"{id}",
+		},
+	},
+	endpointCustomerGet: {
+		method: http.MethodGet,
+		uri:    "customers/{id}.json",
+		pathParams: []string{
+			"{id}",
+		},
+	},
+	endpointCustomerByReferenceGet: {
+		method: http.MethodGet,
+		uri:    "customers/lookup.json?reference={reference}",
+		pathParams: []string{
+			"{reference}",
+		},
+	},
+	endpointCustomerSubscriptionsList: {
+		method: http.MethodGet,
+		uri:    "customers/{customer_id}/subscriptions.json",
+		pathParams: []string{
+			"{customer_id}",
+		},
+	},
+
+	endpointEvents: {
+		method:     http.MethodGet,
+		uri:        "events.json",
+		pathParams: []string{},
+	},
+	endpointEventsCount: {
+		method:     http.MethodGet,
+		uri:        "events/count.json",
+		pathParams: []string{},
+	},
+	endpointEventIngestion: {
+		method: http.MethodPost,
+		uri:    "events/{api_handle}.json",
+		pathParams: []string{
+			"{api_handle}",
+		},
+	},
+	endpointBulkEventIngestion: {
+		method: http.MethodPost,
+		uri:    "events/{api_handle}/bulk.json",
+		pathParams: []string{
+			"{api_handle}",
 		},
 	},
 	endpointCustomersGet: {
@@ -131,7 +191,42 @@ var endpoints = map[string]endpoint{
 			"{id}",
 		},
 	},
-	// products
+	endpointProductFamilyProductsGet: {
+		method: http.MethodGet,
+		uri:    "product_families/{id}/products.json",
+		pathParams: []string{
+			"{id}",
+		},
+	},
+	endpointProductFamilyComponentsGet: {
+		method: http.MethodGet,
+		uri:    "product_families/{product_family_id}/components.json",
+		pathParams: []string{
+			"{product_family_id}",
+		},
+	},
+	endpointProductFamilyComponentByIdGet: {
+		method: http.MethodGet,
+		uri:    "product_families/{product_family_id}/components/{component_id}.json",
+		pathParams: []string{
+			"{product_family_id}",
+			"{component_id}",
+		},
+	},
+	endpointProductFamilyComponentByHandleGet: {
+		method: http.MethodGet,
+		uri:    "product_families/{product_family_id}/components/handle:{component_handle}.json",
+		pathParams: []string{
+			"{product_family_id}",
+			"{component_handle}",
+		},
+	},
+	endpointProductFamiliesGet: {
+		method:     http.MethodGet,
+		uri:        "product_families.json",
+		pathParams: []string{},
+	},
+
 	endpointProductCreate: {
 		method: http.MethodPost,
 		uri:    "product_families/{familyID}/products",
@@ -229,6 +324,22 @@ var endpoints = map[string]endpoint{
 			"{subscriptionID}",
 		},
 	},
+	endpointSubscriptionEvents: {
+		method: http.MethodGet,
+		uri:    "subscriptions/{subscriptionID}/events.json",
+		pathParams: []string{
+			"{subscriptionID}",
+		},
+	},
+	endpointSubscriptionComponentsUsages: {
+		method: http.MethodPost,
+		uri:    "subscriptions/{subscriptionID}/components/{componentID}}/usages.json",
+		pathParams: []string{
+			"{subscriptionID}",
+			"{componentID}",
+		},
+	},
+
 	// invoices
 	endpointGetInvoices: {
 		method:     http.MethodGet,

@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/GetWagz/go-chargify/internal"
 	"github.com/go-resty/resty/v2"
 )
 
@@ -19,17 +20,72 @@ type APIReturn struct {
 	Body       interface{} `json:"body"`
 }
 
-func makeCall(end endpoint, body interface{}, pathParams *map[string]string) (ret APIReturn, err error) {
+var (
+	nilBody interface{}
+)
+
+func makeCall(
+	end endpoint,
+	pathParams *map[string]string,
+	body interface{},
+) (ret APIReturn, err error) {
+	options := makeCallOptions{
+		End:        end,
+		Root:       config.root,
+		PathParams: pathParams,
+		Body:       body,
+	}
+	return options.makeCallEx()
+}
+
+func makeEventsCall(
+	end endpoint,
+	pathParams *map[string]string,
+	queryParams *map[string]string,
+	body interface{}) (ret APIReturn, err error) {
+	options := makeCallOptions{
+		End:         end,
+		Root:        config.eventsRoot,
+		PathParams:  pathParams,
+		QueryParams: queryParams,
+		Body:        body,
+	}
+	return options.makeCallEx()
+}
+
+type makeCallOptions struct {
+	End         endpoint
+	Root        string
+	PathParams  *map[string]string
+	QueryParams *map[string]string
+	Body        interface{}
+}
+
+func (o *makeCallOptions) makeCallEx() (ret APIReturn, err error) {
+	return makeCallEx(o)
+}
+func makeCallEx(options *makeCallOptions) (ret APIReturn, err error) {
 	if config.subdomain == "" || config.apiKey == "" {
 		return ret, errors.New("configuration is invalid for chargify")
 	}
+	end := options.End
+	root := options.Root
+	pathParams := options.PathParams
+	queryParams := options.QueryParams
+	body := options.Body
+
 	endpointURI := end.uri
 	if pathParams != nil {
 		for k, v := range *pathParams {
 			endpointURI = strings.Replace(endpointURI, "{"+k+"}", v, -1)
 		}
 	}
-	url := fmt.Sprintf("%s%s", config.root, endpointURI)
+	urlUrl, err := internal.JoinUrls(root, endpointURI)
+	if err != nil {
+		return
+	}
+	url := urlUrl.String()
+
 	var response *resty.Response
 
 	httpRequest := resty.New().R().
@@ -43,16 +99,31 @@ func makeCall(end endpoint, body interface{}, pathParams *map[string]string) (re
 			if !paramsOK {
 				return ret, errors.New("get calls must send in a map[string]string body")
 			}
-			httpRequest.SetQueryParams(params)
+
+			if queryParams != nil {
+				mergedParams := internal.MergeStringToStringMap(*queryParams, params)
+				httpRequest.SetQueryParams(mergedParams)
+			} else {
+				httpRequest.SetQueryParams(params)
+			}
 		}
 		response, err = httpRequest.Get(url)
 	} else if end.method == http.MethodPost {
+		if queryParams != nil {
+			httpRequest.SetQueryParams(*queryParams)
+		}
 		response, err = httpRequest.SetBody(body).
 			Post(url)
 	} else if end.method == http.MethodPut {
+		if queryParams != nil {
+			httpRequest.SetQueryParams(*queryParams)
+		}
 		response, err = httpRequest.SetBody(body).
 			Put(url)
 	} else if end.method == http.MethodDelete {
+		if queryParams != nil {
+			httpRequest.SetQueryParams(*queryParams)
+		}
 		response, err = httpRequest.Delete(url)
 	}
 

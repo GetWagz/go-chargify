@@ -46,7 +46,7 @@ func CreateCustomer(input *Customer) (*Customer, error) {
 		"customer": *input,
 	}
 
-	ret, err := makeCall(endpoints[endpointCustomerCreate], body, nil)
+	ret, err := makeCall(endpoints[endpointCustomerCreate], nil, body)
 	if err != nil {
 		return nil, err
 	}
@@ -65,9 +65,9 @@ func UpdateCustomer(input *Customer) error {
 	body := map[string]Customer{
 		"customer": *input,
 	}
-	ret, err := makeCall(endpoints[endpointCustomerUpdate], body, &map[string]string{
+	ret, err := makeCall(endpoints[endpointCustomerUpdate], &map[string]string{
 		"id": fmt.Sprintf("%d", input.ID),
-	})
+	}, body)
 	if err != nil {
 		return err
 	}
@@ -83,11 +83,49 @@ func UpdateCustomer(input *Customer) error {
 	return err
 }
 
+// GetCustomerByID gets a customer by chargify id
+func GetCustomerByID(id int) (*Customer, error) {
+	ret, err := makeCall(endpoints[endpointCustomerGet], &map[string]string{
+		"id": fmt.Sprintf("%d", id),
+	}, nilBody)
+	if err != nil || ret.HTTPCode != http.StatusOK {
+		return nil, err
+	}
+
+	entry := ret.Body.(map[string]interface{})
+	custRaw := entry["customer"]
+	customer := Customer{}
+	err = mapstructure.Decode(custRaw, &customer)
+	if err == nil {
+		return &customer, nil
+	}
+	return nil, err
+}
+
+// GetCustomerByReference gets a customer by reference
+func GetCustomerByReference(reference string) (*Customer, error) {
+	ret, err := makeCall(endpoints[endpointCustomerByReferenceGet], &map[string]string{
+		"reference": reference,
+	}, nilBody)
+	if err != nil || ret.HTTPCode != http.StatusOK {
+		return nil, err
+	}
+
+	entry := ret.Body.(map[string]interface{})
+	custRaw := entry["customer"]
+	customer := Customer{}
+	err = mapstructure.Decode(custRaw, &customer)
+	if err == nil {
+		return &customer, nil
+	}
+	return nil, err
+}
+
 // DeleteCustomerByID deletes a customer from chargify permanently
 func DeleteCustomerByID(id int64) error {
-	_, err := makeCall(endpoints[endpointCustomerDelete], nil, &map[string]string{
+	_, err := makeCall(endpoints[endpointCustomerDelete], &map[string]string{
 		"id": fmt.Sprintf("%d", id),
-	})
+	}, nilBody)
 	return err
 }
 
@@ -101,10 +139,10 @@ func GetCustomers(page int, sortDir string) (found []Customer, err error) {
 		return found, errors.New("page must be 1 or higher, not 0 indexed")
 	}
 
-	ret, err := makeCall(endpoints[endpointCustomersGet], map[string]string{
+	ret, err := makeCall(endpoints[endpointCustomersGet], &map[string]string{
 		"direction": sortDir,
 		"page":      fmt.Sprintf("%d", page),
-	}, nil)
+	}, nilBody)
 	if err != nil || ret.HTTPCode != http.StatusOK {
 		return
 	}
@@ -121,6 +159,30 @@ func GetCustomers(page int, sortDir string) (found []Customer, err error) {
 		}
 	}
 	return found, nil
+
+}
+
+// GetCustomerSubscriptions
+func GetCustomerSubscriptions(customerID int) (found []Subscription, err error) {
+	ret, err := makeCall(endpoints[endpointCustomerSubscriptionsList], &map[string]string{
+		"customer_id": fmt.Sprintf("%d", customerID),
+	}, nilBody)
+	if err != nil || ret.HTTPCode != http.StatusOK {
+		return
+	}
+	temp := ret.Body.([]interface{})
+	for i := range temp {
+		entry := temp[i].(map[string]interface{})
+		raw := entry["subscription"]
+		entity := Subscription{}
+		err = mapstructure.Decode(raw, &entity)
+		if err == nil {
+			found = append(found, entity)
+		} else {
+			return nil, err
+		}
+	}
+	return
 }
 
 // SearchForCustomerByReference searches for a customer by it's reference value. It first performs the large search then
@@ -148,9 +210,9 @@ func SearchForCustomerByReference(reference string) (Customer, error) {
 func SearchForCustomersByReference(reference string) ([]Customer, error) {
 	found := []Customer{}
 	var err error
-	ret, err := makeCall(endpoints[endpointCustomersGet], map[string]string{
+	ret, err := makeCall(endpoints[endpointCustomersGet], &map[string]string{
 		"q": reference,
-	}, nil)
+	}, nilBody)
 	if err != nil || ret.HTTPCode != http.StatusOK {
 		return found, err
 	}
@@ -174,9 +236,9 @@ func SearchForCustomersByReference(reference string) ([]Customer, error) {
 func SearchForCustomersByEmail(email string) ([]Customer, error) {
 	found := []Customer{}
 	var err error
-	ret, err := makeCall(endpoints[endpointCustomersGet], map[string]string{
+	ret, err := makeCall(endpoints[endpointCustomersGet], &map[string]string{
 		"q": email,
-	}, nil)
+	}, nilBody)
 	if err != nil || ret.HTTPCode != http.StatusOK {
 		return found, err
 	}

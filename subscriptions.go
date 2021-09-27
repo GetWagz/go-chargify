@@ -3,7 +3,10 @@ package chargify
 import (
 	"errors"
 	"fmt"
+	"net/http"
 
+	"github.com/GetWagz/go-chargify/internal"
+	"github.com/fatih/structs"
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -24,11 +27,19 @@ type Subscription struct {
 	ACHLastName                   string    `json:"authorizer_last_name" mapstructure:"authorizer_last_name"`                                   // (Optional) The last name of the person authorizing the ACH agreement.
 	ChangeDelayed                 bool      `json:"product_change_delayed" mapstructure:"product_change_delayed"`                               // (Optional, used only for https://reference.chargify.com/v1/subscriptions-product-changes-migrations-upgrades-downgrades/update-subscription-product-change When set to true, indicates that a changed value for product_handle should schedule the product change to the next subscription renewal.
 	CalendarBilling               string    `json:"calendar_billing" mapstructure:"calendar_billing"`                                           // (Optional, see https://reference.chargify.com/v1/subscriptions/subscriptions-intro#https://help.chargify.com/subscriptions/billing-dates.html#calendar-billing for more details). Cannot be used when also specifying next_billing_at
-	SnapDay                       int       `json:"snap_day" mapstructure:"snap_day"`                                                           // A value between 1 and 28, or end
+	SnapDay                       string    `json:"snap_day" mapstructure:"snap_day"`                                                           // A value between 1 and 28, or end
 	CalendarBillingFirstDayCharge string    `json:"calendar_billing_first_charge" mapstructure:"calendar_billing_first_charge"`                 // (Optional) One of “prorated” (the default – the prorated product price will be charged immediately), “immediate” (the full product price will be charged immediately), or “delayed” (the full product price will be charged with the first scheduled renewal).
 	ReceivesInvoiceEmails         bool      `json:"receives_invoice_emails" mapstructure:"receives_invoice_emails"`                             // (Optional) Default: True - Whether or not this subscription is set to receive emails related to this subscription.
 	Customer                      *Customer `json:"customer,omitempty" mapstructure:"customer"`
 	Product                       *Product  `json:"product,omitempty" mapstructure:"product"`
+}
+type ListSubscriptionEventsQueryParams struct {
+	Page      *int    `json:"page,omitempty" mapstructure:"page,omitempty"`
+	PerPage   *int    `json:"per_page,omitempty" mapstructure:"per_page,omitempty"`
+	SinceID   *int    `json:"since_id,omitempty" mapstructure:"since_id,omitempty"`
+	MaxID     *int    `json:"max_id,omitempty" mapstructure:"max_id,omitempty"`
+	Direction *string `json:"direction,omitempty" mapstructure:"direction,omitempty"`
+	Filter    *string `json:"filter,omitempty" mapstructure:"filter,omitempty"`
 }
 
 // CreateSubscriptionForCustomer creates a new subscription. When creating a subscription, you must specify a product and a customer.
@@ -52,7 +63,7 @@ func CreateSubscriptionForCustomer(customerReference, productHandle string, paym
 		}
 	}
 
-	ret, err := makeCall(endpoints[endpointSubscriptionCreate], body, nil)
+	ret, err := makeCall(endpoints[endpointSubscriptionCreate], nil, body)
 	if err != nil {
 		return nil, err
 	}
@@ -71,30 +82,30 @@ func CancelSubscription(subscriptionID int64, cancelImmediately bool, reasonCode
 	var err error
 	if cancelImmediately {
 		// it is a delete so no body
-		_, err = makeCall(endpoints[endpointSubscriptionCancelImmediately], nil, &map[string]string{
+		_, err = makeCall(endpoints[endpointSubscriptionCancelImmediately], &map[string]string{
 			"subscriptionID": fmt.Sprintf("%d", subscriptionID),
-		})
+		}, nilBody)
 	} else {
 		// if the reason info is set, then add it
-		reason := map[string]string{}
+		body := map[string]string{}
 		if reasonCode != "" && cancellationMessage != "" {
-			reason = map[string]string{
+			body = map[string]string{
 				"cancellation_message": cancellationMessage,
 				"reason_code":          reasonCode,
 			}
 		}
-		_, err = makeCall(endpoints[endpointSubscriptionCancelDelayed], reason, &map[string]string{
+		_, err = makeCall(endpoints[endpointSubscriptionCancelDelayed], &map[string]string{
 			"subscriptionID": fmt.Sprintf("%d", subscriptionID),
-		})
+		}, body)
 	}
 	return err
 }
 
 // RemoveDelayedSubscriptionCancellation removes a delayed cancellation request, ensuring the subscription does not cancel
 func RemoveDelayedSubscriptionCancellation(subscriptionID int64) error {
-	_, err := makeCall(endpoints[endpointSubscriptionRemoveDelayedCancel], nil, &map[string]string{
+	_, err := makeCall(endpoints[endpointSubscriptionRemoveDelayedCancel], &map[string]string{
 		"subscriptionID": fmt.Sprintf("%d", subscriptionID),
-	})
+	}, nilBody)
 	return err
 }
 
@@ -110,17 +121,17 @@ func MigrateSubscription(targetProductHandle string, currentSubscriptionID int64
 		},
 	}
 
-	_, err := makeCall(endpoints[endpointSubscriptionMigrate], body, &map[string]string{
+	_, err := makeCall(endpoints[endpointSubscriptionMigrate], &map[string]string{
 		"subscriptionID": fmt.Sprintf("%d", currentSubscriptionID),
-	})
+	}, body)
 	return err
 }
 
 // GetSubscription gets a subscription. The docs show it comes back as an array, but as of this implementation it comes back as a map
 func GetSubscription(subscriptionID int64) (*Subscription, error) {
-	ret, err := makeCall(endpoints[endpointSubscriptionGet], nil, &map[string]string{
+	ret, err := makeCall(endpoints[endpointSubscriptionGet], &map[string]string{
 		"subscriptionID": fmt.Sprintf("%d", subscriptionID),
-	})
+	}, nilBody)
 	if err != nil {
 		return nil, err
 	}
@@ -136,9 +147,9 @@ func GetSubscription(subscriptionID int64) (*Subscription, error) {
 
 // GetSubscriptionMetaData gets the subscription metadata
 func GetSubscriptionMetaData(subscriptionID int64) (*MetaData, error) {
-	ret, err := makeCall(endpoints[endpointSubscriptionGetMetaData], nil, &map[string]string{
+	ret, err := makeCall(endpoints[endpointSubscriptionGetMetaData], &map[string]string{
 		"subscriptionID": fmt.Sprintf("%d", subscriptionID),
-	})
+	}, nilBody)
 	if err != nil {
 		return nil, err
 	}
@@ -163,9 +174,9 @@ func RefundSubscriptionPayment(subscriptionID string, paymentID string, amount s
 		},
 	}
 
-	ret, err := makeCall(endpoints[endpointSubscriptionRefund], body, &map[string]string{
+	ret, err := makeCall(endpoints[endpointSubscriptionRefund], &map[string]string{
 		"subscriptionID": subscriptionID,
-	})
+	}, body)
 	if err != nil {
 		return nil, err
 	}
@@ -177,4 +188,30 @@ func RefundSubscriptionPayment(subscriptionID string, paymentID string, amount s
 	refund := &Refund{}
 	err = mapstructure.Decode(apiBody["refund"], refund)
 	return refund, err
+}
+
+// GetCustomerByID gets a customer by chargify id
+func ListSubscriptionEvents(subscriptionID int, queryParams *ListSubscriptionEventsQueryParams) (found []Event, err error) {
+	structs.DefaultTagName = "mapstructure"
+	m := structs.Map(queryParams)
+	body := internal.ToMapStringToString(m)
+	ret, err := makeCall(endpoints[endpointSubscriptionEvents], &map[string]string{
+		"subscriptionID": fmt.Sprintf("%d", subscriptionID),
+	}, body)
+	if err != nil || ret.HTTPCode != http.StatusOK {
+		return nil, err
+	}
+
+	temp := ret.Body.([]interface{})
+	for i := range temp {
+		entry := temp[i].(map[string]interface{})
+		raw := entry["event"]
+		entity := Event{}
+		err = mapstructure.Decode(raw, &entity)
+		if err == nil {
+			found = append(found, entity)
+		}
+	}
+	return found, nil
+
 }
