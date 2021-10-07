@@ -1,5 +1,7 @@
 # Chargify SDK
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/GetWagz/go-chargify)](https://goreportcard.com/report/github.com/GetWagz/go-chargify)
+
 This library is a small wrapper around a subset of the Chargify API.
 
 *Note: As of December 28th, 2020, this library is no longer actively maintained. New maintainers are welcome to email the Wagz engineering team to take lead over the library.*
