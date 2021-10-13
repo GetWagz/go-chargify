@@ -70,7 +70,7 @@ We use the following additional tools in this library, and thank the maintainers
 ### Coupons
 
 * [Create a Coupon](https://reference.chargify.com/v1/coupons/create-coupon)
-* [Read a Coupon](https://reference.chargify.com/v1/coupons/read-coupon)
+* [Find a Coupon](https://reference.chargify.com/v1/coupons/find-coupon)
 * [Archive a Coupon](https://reference.chargify.com/v1/coupons/archive-coupon)
 
 ## Hiring
