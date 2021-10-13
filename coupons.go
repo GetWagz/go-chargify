@@ -17,8 +17,8 @@ type Coupon struct {
 	ProductFamilyID string `json:"product_family_id" mapstructure:"product_family_id"` //	The id for the product family
 }
 
-// CreatePercentCoupon creates a new percent based coupon
-func CreatePercentCoupon(productFamilyID int64, input *Coupon) error {
+// CreateCoupon creates a new percent based coupon
+func CreateCoupon(productFamilyID int64, input *Coupon) error {
 	if input.Name == "" || input.Code == "" || input.Recurring == "" {
 		return errors.New("name, code, and percentage are required")
 	}
