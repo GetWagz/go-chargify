@@ -67,6 +67,12 @@ We use the following additional tools in this library, and thank the maintainers
 * [Cancel Subscription - Delayed](https://reference.chargify.com/v1/subscriptions-cancellations/cancel-subscription-delayed-method-1)
 * [Remove Delayed Cancellation](https://reference.chargify.com/v1/subscriptions-cancellations/cancel-subscription-remove-delayed-method)
 
+### Coupons
+
+* [Create a Coupon](https://reference.chargify.com/v1/coupons/create-coupon)
+* [Find a Coupon](https://reference.chargify.com/v1/coupons/find-coupon)
+* [Archive a Coupon](https://reference.chargify.com/v1/coupons/archive-coupon)
+
 ## Hiring
 
 Are you on the New Hampshire Seacoast and love Go, Typescript, Swift, or Java? Send an email to engineering@wagz.com and let's find out if we're a good match!
