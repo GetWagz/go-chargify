@@ -13,6 +13,9 @@ const (
 	endpointBillingPortalEnableAndInvite = "billing_portal_enable_and_invite"
 	endpointBillingPortalGet             = "billing_portal_get"
 
+	endpointCouponCreate  = "coupon_create"
+	endpointArchiveCoupon = "archive_coupon"
+
 	endpointCustomerCreate = "customer_create"
 	endpointCustomerDelete = "customer_delete"
 	endpointCustomerUpdate = "customer_update"
@@ -255,6 +258,21 @@ var endpoints = map[string]endpoint{
 		uri:    "invoices/{invoiceID}/refunds",
 		pathParams: []string{
 			"{invoiceID}",
+		},
+	},
+	// coupons
+	endpointCouponCreate: {
+		method: http.MethodPost,
+		uri:    "product_families/{familyID}/coupons",
+		pathParams: []string{
+			"{familyID}",
+		},
+	},
+	endpointArchiveCoupon: {
+		method: http.MethodDelete,
+		uri:    "product_families/{familyID}/coupons{couponID}",
+		pathParams: []string{
+			"{couponID}",
 		},
 	},
 }
