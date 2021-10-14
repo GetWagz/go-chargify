@@ -39,11 +39,13 @@ type Coupon struct {
 // CreateCoupon creates a new percent based coupon
 func CreatePercentageCoupon(productFamilyID int64, input *PercentageCoupon) error {
 	if input.Name == "" || input.Code == "" || input.Recurring == "" {
-		return errors.New("name, code, and percentage are required")
+		return errors.New("name, code, and recurring are required")
 	}
 	if input.Percentage <= 0 {
 		return errors.New("a value greater than 0 must be included for percentage")
 	}
+
+	input.ProductFamilyID = fmt.Sprintf("%d", productFamilyID)
 	body := map[string]PercentageCoupon{
 		"coupon": *input,
 	}
@@ -66,11 +68,13 @@ func CreatePercentageCoupon(productFamilyID int64, input *PercentageCoupon) erro
 // CreateFlatCoupon creates a new flat rate coupon
 func CreateFlatCoupon(productFamilyID int64, input *FlatCoupon) error {
 	if input.Name == "" || input.Code == "" || input.Recurring == "" {
-		return errors.New("name, code, and percentage are required")
+		return errors.New("name, code, and recurring are required")
 	}
 	if input.AmountInCents <= 0 {
 		return errors.New("a value greater than 0 must be included for amount_in_cents")
 	}
+
+	input.ProductFamilyID = fmt.Sprintf("%d", productFamilyID)
 	body := map[string]FlatCoupon{
 		"coupon": *input,
 	}
