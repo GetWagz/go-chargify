@@ -7,42 +7,48 @@ import (
 	"github.com/mitchellh/mapstructure"
 )
 
+// PercentageCoupon is the structure of what we need to send to Chargify when creating a percentage-based coupon
 type PercentageCoupon struct {
 	Name            string `json:"name" mapstructure:"name"`                           //	The coupon name
 	Code            string `json:"code" mapstructure:"code"`                           //	The coupon code
-	Description     string `json:"description" mapstructure:"description"`             // The (optionally required?) description for the coupon
+	Description     string `json:"description" mapstructure:"description"`             //   The (optionally required?) description for the coupon
 	Percentage      int    `json:"percentage" mapstructure:"percentage"`               //	The percentage value of the coupon
 	Recurring       string `json:"recurring" mapstructure:"recurring"`                 //	A string value for the boolean of whether or not this coupon is recurring
 	ProductFamilyID string `json:"product_family_id" mapstructure:"product_family_id"` //	The id for the product family
 }
 
+// PercentageCouponReturn is here because Chargify send back different types than what it asks for
+
 type PercentageCouponReturn struct {
 	Name            string  `json:"name" mapstructure:"name"`                           //	The coupon name
 	Code            string  `json:"code" mapstructure:"code"`                           //	The coupon code
-	Description     string  `json:"description" mapstructure:"description"`             // The (optionally required?) description for the coupon
+	Description     string  `json:"description" mapstructure:"description"`             //  The (optionally required?) description for the coupon
 	Percentage      string  `json:"percentage" mapstructure:"percentage"`               //	The percentage value of the coupon
-	Recurring       bool    `json:"recurring" mapstructure:"recurring"`                 //	A string value for the boolean of whether or not this coupon is recurring
+	Recurring       bool    `json:"recurring" mapstructure:"recurring"`                 //	A boolean of whether or not this coupon is recurring
 	ProductFamilyID float64 `json:"product_family_id" mapstructure:"product_family_id"` //	The id for the product family
 }
 
+// FlatCoupon is the structure of what we need to send to Chargify when creating a flat rate coupon
 type FlatCoupon struct {
 	Name            string `json:"name" mapstructure:"name"`                           //	The coupon name
 	Code            string `json:"code" mapstructure:"code"`                           //	The coupon code
-	Description     string `json:"description" mapstructure:"description"`             // The (optionally required?) description for the coupon
+	Description     string `json:"description" mapstructure:"description"`             //   The (optionally required?) description for the coupon
 	AmountInCents   int64  `json:"amount_in_cents" mapstructure:"amount_in_cents"`     //	The amount_in_cents value of the coupon
 	Recurring       string `json:"recurring" mapstructure:"recurring"`                 //	A string value for the boolean of whether or not this coupon is recurring
 	ProductFamilyID string `json:"product_family_id" mapstructure:"product_family_id"` //	The id for the product family
 }
 
+// FlatCouponReturn is here because Chargify send back different types than what it asks for
 type FlatCouponReturn struct {
 	Name            string  `json:"name" mapstructure:"name"`                           //	The coupon name
 	Code            string  `json:"code" mapstructure:"code"`                           //	The coupon code
-	Description     string  `json:"description" mapstructure:"description"`             // The (optionally required?) description for the coupon
+	Description     string  `json:"description" mapstructure:"description"`             //  The (optionally required?) description for the coupon
 	AmountInCents   int64   `json:"amount_in_cents" mapstructure:"amount_in_cents"`     //	The amount_in_cents value of the coupon
-	Recurring       bool    `json:"recurring" mapstructure:"recurring"`                 //	A string value for the boolean of whether or not this coupon is recurring
+	Recurring       bool    `json:"recurring" mapstructure:"recurring"`                 //	A boolean of whether or not this coupon is recurring
 	ProductFamilyID float64 `json:"product_family_id" mapstructure:"product_family_id"` //	The id for the product family
 }
 
+// Coupon is what we give back on the request
 type Coupon struct {
 	ID              int64  `json:"id"`
 	Name            string `json:"name" mapstructure:"name"`                           //	The coupon name
