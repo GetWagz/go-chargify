@@ -16,6 +16,15 @@ type PercentageCoupon struct {
 	ProductFamilyID string `json:"product_family_id" mapstructure:"product_family_id"` //	The id for the product family
 }
 
+type PercentageCouponReturn struct {
+	Name            string  `json:"name" mapstructure:"name"`                           //	The coupon name
+	Code            string  `json:"code" mapstructure:"code"`                           //	The coupon code
+	Description     string  `json:"description" mapstructure:"description"`             // The (optionally required?) description for the coupon
+	Percentage      string  `json:"percentage" mapstructure:"percentage"`               //	The percentage value of the coupon
+	Recurring       bool    `json:"recurring" mapstructure:"recurring"`                 //	A string value for the boolean of whether or not this coupon is recurring
+	ProductFamilyID float64 `json:"product_family_id" mapstructure:"product_family_id"` //	The id for the product family
+}
+
 type FlatCoupon struct {
 	Name            string `json:"name" mapstructure:"name"`                           //	The coupon name
 	Code            string `json:"code" mapstructure:"code"`                           //	The coupon code
@@ -23,6 +32,15 @@ type FlatCoupon struct {
 	AmountInCents   int64  `json:"amount_in_cents" mapstructure:"amount_in_cents"`     //	The amount_in_cents value of the coupon
 	Recurring       string `json:"recurring" mapstructure:"recurring"`                 //	A string value for the boolean of whether or not this coupon is recurring
 	ProductFamilyID string `json:"product_family_id" mapstructure:"product_family_id"` //	The id for the product family
+}
+
+type FlatCouponReturn struct {
+	Name            string  `json:"name" mapstructure:"name"`                           //	The coupon name
+	Code            string  `json:"code" mapstructure:"code"`                           //	The coupon code
+	Description     string  `json:"description" mapstructure:"description"`             // The (optionally required?) description for the coupon
+	AmountInCents   int64   `json:"amount_in_cents" mapstructure:"amount_in_cents"`     //	The amount_in_cents value of the coupon
+	Recurring       bool    `json:"recurring" mapstructure:"recurring"`                 //	A string value for the boolean of whether or not this coupon is recurring
+	ProductFamilyID float64 `json:"product_family_id" mapstructure:"product_family_id"` //	The id for the product family
 }
 
 type Coupon struct {
@@ -61,7 +79,8 @@ func CreatePercentageCoupon(productFamilyID int64, input *PercentageCoupon) erro
 	if !bodyOK {
 		return errors.New("could not understand server response")
 	}
-	err = mapstructure.Decode(apiBody["coupon"], input)
+	handleRet := PercentageCouponReturn{}
+	err = mapstructure.Decode(apiBody["coupon"], &handleRet)
 	return err
 }
 
@@ -90,7 +109,8 @@ func CreateFlatCoupon(productFamilyID int64, input *FlatCoupon) error {
 	if !bodyOK {
 		return errors.New("could not understand server response")
 	}
-	err = mapstructure.Decode(apiBody["coupon"], input)
+	handleRet := FlatCouponReturn{}
+	err = mapstructure.Decode(apiBody["coupon"], &handleRet)
 	return err
 }
 
@@ -113,10 +133,10 @@ func GetCouponByCode(productFamilyID int64, code string) (*Coupon, error) {
 }
 
 // ArchiveCoupon archives a coupon on use or expiration
-func ArchiveCoupon(productFamilyID, couponId int64) error {
-	_, err := makeCall(endpoints[endpointArchiveCoupon], nil, &map[string]string{
+func ArchiveCoupon(productFamilyID, couponID int64) error {
+	_, err := makeCall(endpoints[endpointCouponArchive], nil, &map[string]string{
 		"familyID": fmt.Sprintf("%d", productFamilyID),
-		"couponId": fmt.Sprintf("%d", couponId),
+		"couponID": fmt.Sprintf("%d", couponID),
 	})
 	return err
 }

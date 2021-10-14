@@ -15,7 +15,7 @@ const (
 
 	endpointCouponCreate    = "coupon_create"
 	endpointCouponGetByCode = "find_coupon"
-	endpointArchiveCoupon   = "archive_coupon"
+	endpointCouponArchive   = "coupon_archive"
 
 	endpointCustomerCreate = "customer_create"
 	endpointCustomerDelete = "customer_delete"
@@ -277,10 +277,11 @@ var endpoints = map[string]endpoint{
 			"{familyID}",
 		},
 	},
-	endpointArchiveCoupon: {
+	endpointCouponArchive: {
 		method: http.MethodDelete,
-		uri:    "product_families/{familyID}/coupons{couponID}",
+		uri:    "product_families/{familyID}/coupons/{couponID}.json",
 		pathParams: []string{
+			"{familyID}",
 			"{couponID}",
 		},
 	},
