@@ -170,7 +170,7 @@ func SavePaymentProfileACH(customerID int64, bankName, bankRoutingNumber, bankAc
 // DeletePaymentProfile deletes a payment profile
 func DeletePaymentProfile(subscriptionID int64, profileID int64) error {
 
-	ret, err := makeCall(endpoints[endpointPaymentProfileDelete], nilBody, &map[string]string{
+	ret, err := makeCall(endpoints[endpointPaymentProfileDelete], nil, &map[string]string{
 		"subscriptionID": fmt.Sprintf("%v", subscriptionID),
 		"profileID":      fmt.Sprintf("%v", profileID),
 	})

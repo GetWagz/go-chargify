@@ -104,7 +104,7 @@ func GetInvoices(queryParams *InvoiceQueryParams) ([]Invoice, error) {
 func GetInvoiceByID(invoiceID int64) (*Invoice, error) {
 	invoice := &Invoice{}
 
-	ret, err := makeCall(endpoints[endpointGetInvoice], nilBody, &map[string]string{
+	ret, err := makeCall(endpoints[endpointGetInvoice], nil, &map[string]string{
 		"invoiceID": fmt.Sprintf("%d", invoiceID),
 	})
 	if err != nil {

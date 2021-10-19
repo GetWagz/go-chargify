@@ -20,10 +20,6 @@ type APIReturn struct {
 	Body       interface{} `json:"body"`
 }
 
-var (
-	nilBody interface{}
-)
-
 func makeCall(end endpoint, body interface{}, pathParams *map[string]string) (ret APIReturn, err error) {
 	options := makeCallOptions{
 		End:        end,

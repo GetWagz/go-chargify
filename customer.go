@@ -85,7 +85,7 @@ func UpdateCustomer(input *Customer) error {
 
 // GetCustomerByID gets a customer by chargify id
 func GetCustomerByID(id int) (*Customer, error) {
-	ret, err := makeCall(endpoints[endpointCustomerGet], nilBody, &map[string]string{
+	ret, err := makeCall(endpoints[endpointCustomerGet], nil, &map[string]string{
 		"id": fmt.Sprintf("%d", id),
 	})
 	if err != nil || ret.HTTPCode != http.StatusOK {
@@ -104,7 +104,7 @@ func GetCustomerByID(id int) (*Customer, error) {
 
 // GetCustomerByReference gets a customer by reference
 func GetCustomerByReference(reference string) (*Customer, error) {
-	ret, err := makeCall(endpoints[endpointCustomerByReferenceGet], nilBody, &map[string]string{
+	ret, err := makeCall(endpoints[endpointCustomerByReferenceGet], nil, &map[string]string{
 		"reference": reference,
 	})
 	if err != nil || ret.HTTPCode != http.StatusOK {
@@ -123,7 +123,7 @@ func GetCustomerByReference(reference string) (*Customer, error) {
 
 // DeleteCustomerByID deletes a customer from chargify permanently
 func DeleteCustomerByID(id int64) error {
-	_, err := makeCall(endpoints[endpointCustomerDelete], nilBody, &map[string]string{
+	_, err := makeCall(endpoints[endpointCustomerDelete], nil, &map[string]string{
 		"id": fmt.Sprintf("%d", id),
 	})
 	return err
@@ -164,7 +164,7 @@ func GetCustomers(page int, sortDir string) (found []Customer, err error) {
 
 // GetCustomerSubscriptions
 func GetCustomerSubscriptions(customerID int) (found []Subscription, err error) {
-	ret, err := makeCall(endpoints[endpointCustomerSubscriptionsList], nilBody, &map[string]string{
+	ret, err := makeCall(endpoints[endpointCustomerSubscriptionsList], nil, &map[string]string{
 		"customer_id": fmt.Sprintf("%d", customerID),
 	})
 	if err != nil || ret.HTTPCode != http.StatusOK {

@@ -82,7 +82,7 @@ func CancelSubscription(subscriptionID int64, cancelImmediately bool, reasonCode
 	var err error
 	if cancelImmediately {
 		// it is a delete so no body
-		_, err = makeCall(endpoints[endpointSubscriptionCancelImmediately], nilBody, &map[string]string{
+		_, err = makeCall(endpoints[endpointSubscriptionCancelImmediately], nil, &map[string]string{
 			"subscriptionID": fmt.Sprintf("%d", subscriptionID),
 		})
 	} else {
@@ -116,7 +116,7 @@ func UpdateSubscription(subscriptionID int64, productHandle string) error {
 
 // RemoveDelayedSubscriptionCancellation removes a delayed cancellation request, ensuring the subscription does not cancel
 func RemoveDelayedSubscriptionCancellation(subscriptionID int64) error {
-	_, err := makeCall(endpoints[endpointSubscriptionRemoveDelayedCancel], nilBody, &map[string]string{
+	_, err := makeCall(endpoints[endpointSubscriptionRemoveDelayedCancel], nil, &map[string]string{
 		"subscriptionID": fmt.Sprintf("%d", subscriptionID),
 	})
 	return err
@@ -142,7 +142,7 @@ func MigrateSubscription(targetProductHandle string, currentSubscriptionID int64
 
 // GetSubscription gets a subscription. The docs show it comes back as an array, but as of this implementation it comes back as a map
 func GetSubscription(subscriptionID int64) (*Subscription, error) {
-	ret, err := makeCall(endpoints[endpointSubscriptionGet], nilBody, &map[string]string{
+	ret, err := makeCall(endpoints[endpointSubscriptionGet], nil, &map[string]string{
 		"subscriptionID": fmt.Sprintf("%d", subscriptionID),
 	})
 	if err != nil {
@@ -160,7 +160,7 @@ func GetSubscription(subscriptionID int64) (*Subscription, error) {
 
 // GetSubscriptionMetaData gets the subscription metadata
 func GetSubscriptionMetaData(subscriptionID int64) (*MetaData, error) {
-	ret, err := makeCall(endpoints[endpointSubscriptionGetMetaData], nilBody, &map[string]string{
+	ret, err := makeCall(endpoints[endpointSubscriptionGetMetaData], nil, &map[string]string{
 		"subscriptionID": fmt.Sprintf("%d", subscriptionID),
 	})
 	if err != nil {
