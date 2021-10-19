@@ -26,7 +26,7 @@ func setup() (err error) {
 
 	config.subdomain = strings.ToLower(envHelper("CHARGIFY_SUBDOMAIN", ""))
 	if config.subdomain == "" {
-		log.Print("subdomain not in env!")
+		log.Print("subdomain not provided!")
 	}
 	config.apiKey = envHelper("CHARGIFY_API_KEY", "")
 	if config.apiKey == "" {

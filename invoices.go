@@ -54,30 +54,30 @@ func GetInvoices(queryParams *InvoiceQueryParams) ([]Invoice, error) {
 	invoices := []Invoice{}
 
 	// massage the params into map[string]string
-	body := map[string]string{}
+	params := map[string]string{}
 	if queryParams != nil && queryParams.StartDate != "" {
-		body["start_date"] = queryParams.StartDate
+		params["start_date"] = queryParams.StartDate
 	}
 	if queryParams != nil && queryParams.EndDate != "" {
-		body["end_date"] = queryParams.EndDate
+		params["end_date"] = queryParams.EndDate
 	}
 	if queryParams != nil && queryParams.Status != "" {
-		body["status"] = queryParams.Status
+		params["status"] = queryParams.Status
 	}
 	if queryParams != nil && queryParams.SubscriptionID != 0 {
-		body["subscription_id"] = fmt.Sprintf("%d", queryParams.SubscriptionID)
+		params["subscription_id"] = fmt.Sprintf("%d", queryParams.SubscriptionID)
 	}
 	if queryParams != nil && queryParams.Page != -1 {
-		body["page"] = fmt.Sprintf("%d", queryParams.Page)
+		params["page"] = fmt.Sprintf("%d", queryParams.Page)
 	}
 	if queryParams != nil && queryParams.PerPage != 0 {
-		body["per_page"] = fmt.Sprintf("%d", queryParams.PerPage)
+		params["per_page"] = fmt.Sprintf("%d", queryParams.PerPage)
 	}
 	if queryParams != nil && queryParams.Direction != "" {
-		body["direction"] = queryParams.Direction
+		params["direction"] = queryParams.Direction
 	}
 
-	ret, err := makeCall(endpoints[endpointGetInvoices], body, &map[string]string{})
+	ret, err := makeCall(endpoints[endpointGetInvoices], params, &map[string]string{})
 	if err != nil {
 		return invoices, err
 	}
@@ -130,7 +130,7 @@ func GetInvoiceByID(invoiceID int64) (*Invoice, error) {
 func RefundInvoice(invoiceID, amount, memo string, paymentID int64, external, applyCredit, voidInvoice bool) (*Invoice, error) {
 	invoice := &Invoice{}
 
-	body := map[string]map[string]string{
+	params := map[string]map[string]string{
 		"refund": {
 			"amount":       amount,
 			"memo":         memo,
@@ -141,7 +141,7 @@ func RefundInvoice(invoiceID, amount, memo string, paymentID int64, external, ap
 		},
 	}
 
-	ret, err := makeCall(endpoints[endpointRefundInvoice], body, &map[string]string{
+	ret, err := makeCall(endpoints[endpointRefundInvoice], params, &map[string]string{
 		"invoiceID": invoiceID,
 	})
 	if err != nil {

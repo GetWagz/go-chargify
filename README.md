@@ -1,5 +1,7 @@
 # Chargify SDK
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/GetWagz/go-chargify)](https://goreportcard.com/report/github.com/GetWagz/go-chargify)
+
 This library is a small wrapper around a subset of the Chargify API.
 
 *Note: As of December 28th, 2020, this library is no longer actively maintained. New maintainers are welcome to email the Wagz engineering team to take lead over the library.*
@@ -72,9 +74,16 @@ We use the following additional tools in this library, and thank the maintainers
 ### Subscriptions
 
 * [Create Subscription](https://reference.chargify.com/v1/subscriptions/create-subscription)
+* [Update Subscription](https://reference.chargify.com/v1/subscriptions-product-changes-migrations-upgrades-downgrades)
 * [Cancel Subscription - Immediately](https://reference.chargify.com/v1/subscriptions-cancellations/cancel-subscription)
 * [Cancel Subscription - Delayed](https://reference.chargify.com/v1/subscriptions-cancellations/cancel-subscription-delayed-method-1)
 * [Remove Delayed Cancellation](https://reference.chargify.com/v1/subscriptions-cancellations/cancel-subscription-remove-delayed-method)
+
+### Coupons
+
+* [Create a Coupon](https://reference.chargify.com/v1/coupons/create-coupon)
+* [Find a Coupon](https://reference.chargify.com/v1/coupons/find-coupon)
+* [Archive a Coupon](https://reference.chargify.com/v1/coupons/archive-coupon)
 
 ## Hiring
 

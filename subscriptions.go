@@ -27,7 +27,7 @@ type Subscription struct {
 	ACHLastName                   string    `json:"authorizer_last_name" mapstructure:"authorizer_last_name"`                                   // (Optional) The last name of the person authorizing the ACH agreement.
 	ChangeDelayed                 bool      `json:"product_change_delayed" mapstructure:"product_change_delayed"`                               // (Optional, used only for https://reference.chargify.com/v1/subscriptions-product-changes-migrations-upgrades-downgrades/update-subscription-product-change When set to true, indicates that a changed value for product_handle should schedule the product change to the next subscription renewal.
 	CalendarBilling               string    `json:"calendar_billing" mapstructure:"calendar_billing"`                                           // (Optional, see https://reference.chargify.com/v1/subscriptions/subscriptions-intro#https://help.chargify.com/subscriptions/billing-dates.html#calendar-billing for more details). Cannot be used when also specifying next_billing_at
-	SnapDay                       string    `json:"snap_day" mapstructure:"snap_day"`                                                           // A value between 1 and 28, or end
+	SnapDay                       int       `json:"snap_day" mapstructure:"snap_day"`                                                           // A value between 1 and 28, or end
 	CalendarBillingFirstDayCharge string    `json:"calendar_billing_first_charge" mapstructure:"calendar_billing_first_charge"`                 // (Optional) One of “prorated” (the default – the prorated product price will be charged immediately), “immediate” (the full product price will be charged immediately), or “delayed” (the full product price will be charged with the first scheduled renewal).
 	ReceivesInvoiceEmails         bool      `json:"receives_invoice_emails" mapstructure:"receives_invoice_emails"`                             // (Optional) Default: True - Whether or not this subscription is set to receive emails related to this subscription.
 	Customer                      *Customer `json:"customer,omitempty" mapstructure:"customer"`
@@ -87,17 +87,30 @@ func CancelSubscription(subscriptionID int64, cancelImmediately bool, reasonCode
 		})
 	} else {
 		// if the reason info is set, then add it
-		body := map[string]string{}
+		reason := map[string]string{}
 		if reasonCode != "" && cancellationMessage != "" {
-			body = map[string]string{
+			reason = map[string]string{
 				"cancellation_message": cancellationMessage,
 				"reason_code":          reasonCode,
 			}
 		}
-		_, err = makeCall(endpoints[endpointSubscriptionCancelDelayed], body, &map[string]string{
+		_, err = makeCall(endpoints[endpointSubscriptionCancelDelayed], reason, &map[string]string{
 			"subscriptionID": fmt.Sprintf("%d", subscriptionID),
 		})
 	}
+	return err
+}
+
+// UpdateSubscription updates a subscription for a customer
+func UpdateSubscription(subscriptionID int64, productHandle string) error {
+	body := map[string]map[string]interface{}{
+		"subscription": {
+			"product_handle": productHandle,
+		},
+	}
+	_, err := makeCall(endpoints[endpointSubscriptionUpdate], body, &map[string]string{
+		"subscriptionID": fmt.Sprintf("%d", subscriptionID),
+	})
 	return err
 }
 

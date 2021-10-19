@@ -139,10 +139,10 @@ func GetCustomers(page int, sortDir string) (found []Customer, err error) {
 		return found, errors.New("page must be 1 or higher, not 0 indexed")
 	}
 
-	ret, err := makeCall(endpoints[endpointCustomersGet], nilBody, &map[string]string{
+	ret, err := makeCall(endpoints[endpointCustomersGet], &map[string]string{
 		"direction": sortDir,
 		"page":      fmt.Sprintf("%d", page),
-	})
+	}, nil)
 	if err != nil || ret.HTTPCode != http.StatusOK {
 		return
 	}
@@ -210,9 +210,9 @@ func SearchForCustomerByReference(reference string) (Customer, error) {
 func SearchForCustomersByReference(reference string) ([]Customer, error) {
 	found := []Customer{}
 	var err error
-	ret, err := makeCall(endpoints[endpointCustomersGet], nilBody, &map[string]string{
+	ret, err := makeCall(endpoints[endpointCustomersGet], map[string]string{
 		"q": reference,
-	})
+	}, nil)
 	if err != nil || ret.HTTPCode != http.StatusOK {
 		return found, err
 	}
@@ -236,9 +236,9 @@ func SearchForCustomersByReference(reference string) ([]Customer, error) {
 func SearchForCustomersByEmail(email string) ([]Customer, error) {
 	found := []Customer{}
 	var err error
-	ret, err := makeCall(endpoints[endpointCustomersGet], nilBody, &map[string]string{
+	ret, err := makeCall(endpoints[endpointCustomersGet], map[string]string{
 		"q": email,
-	})
+	}, nil)
 	if err != nil || ret.HTTPCode != http.StatusOK {
 		return found, err
 	}

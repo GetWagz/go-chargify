@@ -13,6 +13,10 @@ const (
 	endpointBillingPortalEnableAndInvite = "billing_portal_enable_and_invite"
 	endpointBillingPortalGet             = "billing_portal_get"
 
+	endpointCouponCreate    = "coupon_create"
+	endpointCouponGetByCode = "find_coupon"
+	endpointCouponArchive   = "coupon_archive"
+
 	endpointCustomerCreate            = "customer_create"
 	endpointCustomerDelete            = "customer_delete"
 	endpointCustomerUpdate            = "customer_update"
@@ -46,6 +50,7 @@ const (
 
 	endpointSubscriptionCreate              = "subscription_create"
 	endpointSubscriptionGet                 = "subscription_get"
+	endpointSubscriptionUpdate              = "subscription_update"
 	endpointSubscriptionGetMetaData         = "subscription_get_meta_data"
 	endpointSubscriptionCancelImmediately   = "subscription_cancel_immediately"
 	endpointSubscriptionCancelDelayed       = "subscription_cancel_delayed"
@@ -191,6 +196,7 @@ var endpoints = map[string]endpoint{
 			"{id}",
 		},
 	},
+	// products
 	endpointProductFamilyProductsGet: {
 		method: http.MethodGet,
 		uri:    "product_families/{id}/products.json",
@@ -282,6 +288,13 @@ var endpoints = map[string]endpoint{
 			"{subscriptionID}",
 		},
 	},
+	endpointSubscriptionUpdate: {
+		method: http.MethodPut,
+		uri:    "subscriptions/{subscriptionID}",
+		pathParams: []string{
+			"{subscriptionID}",
+		},
+	},
 	endpointSubscriptionGetMetaData: {
 		method: http.MethodGet,
 		uri:    "subscriptions/{subscriptionID}/metadata",
@@ -358,6 +371,30 @@ var endpoints = map[string]endpoint{
 		uri:    "invoices/{invoiceID}/refunds",
 		pathParams: []string{
 			"{invoiceID}",
+		},
+	},
+	// coupons
+	endpointCouponCreate: {
+		method: http.MethodPost,
+		uri:    "product_families/{familyID}/coupons",
+		pathParams: []string{
+			"{familyID}",
+		},
+	},
+	endpointCouponGetByCode: {
+		method: http.MethodGet,
+		uri:    "coupons/find?code={code}&product_family_id={familyID}",
+		pathParams: []string{
+			"{code}",
+			"{familyID}",
+		},
+	},
+	endpointCouponArchive: {
+		method: http.MethodDelete,
+		uri:    "product_families/{familyID}/coupons/{couponID}.json",
+		pathParams: []string{
+			"{familyID}",
+			"{couponID}",
 		},
 	},
 }
