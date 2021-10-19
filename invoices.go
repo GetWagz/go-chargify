@@ -77,7 +77,7 @@ func GetInvoices(queryParams *InvoiceQueryParams) ([]Invoice, error) {
 		body["direction"] = queryParams.Direction
 	}
 
-	ret, err := makeCall(endpoints[endpointGetInvoices], &map[string]string{}, body)
+	ret, err := makeCall(endpoints[endpointGetInvoices], body, &map[string]string{})
 	if err != nil {
 		return invoices, err
 	}
@@ -104,9 +104,9 @@ func GetInvoices(queryParams *InvoiceQueryParams) ([]Invoice, error) {
 func GetInvoiceByID(invoiceID int64) (*Invoice, error) {
 	invoice := &Invoice{}
 
-	ret, err := makeCall(endpoints[endpointGetInvoice], &map[string]string{
+	ret, err := makeCall(endpoints[endpointGetInvoice], nilBody, &map[string]string{
 		"invoiceID": fmt.Sprintf("%d", invoiceID),
-	}, nilBody)
+	})
 	if err != nil {
 		return invoice, err
 	}
@@ -141,9 +141,9 @@ func RefundInvoice(invoiceID, amount, memo string, paymentID int64, external, ap
 		},
 	}
 
-	ret, err := makeCall(endpoints[endpointRefundInvoice], &map[string]string{
+	ret, err := makeCall(endpoints[endpointRefundInvoice], body, &map[string]string{
 		"invoiceID": invoiceID,
-	}, body)
+	})
 	if err != nil {
 		return invoice, err
 	}

@@ -63,7 +63,7 @@ func CreateSubscriptionForCustomer(customerReference, productHandle string, paym
 		}
 	}
 
-	ret, err := makeCall(endpoints[endpointSubscriptionCreate], nil, body)
+	ret, err := makeCall(endpoints[endpointSubscriptionCreate], body, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -82,9 +82,9 @@ func CancelSubscription(subscriptionID int64, cancelImmediately bool, reasonCode
 	var err error
 	if cancelImmediately {
 		// it is a delete so no body
-		_, err = makeCall(endpoints[endpointSubscriptionCancelImmediately], &map[string]string{
+		_, err = makeCall(endpoints[endpointSubscriptionCancelImmediately], nilBody, &map[string]string{
 			"subscriptionID": fmt.Sprintf("%d", subscriptionID),
-		}, nilBody)
+		})
 	} else {
 		// if the reason info is set, then add it
 		body := map[string]string{}
@@ -94,18 +94,18 @@ func CancelSubscription(subscriptionID int64, cancelImmediately bool, reasonCode
 				"reason_code":          reasonCode,
 			}
 		}
-		_, err = makeCall(endpoints[endpointSubscriptionCancelDelayed], &map[string]string{
+		_, err = makeCall(endpoints[endpointSubscriptionCancelDelayed], body, &map[string]string{
 			"subscriptionID": fmt.Sprintf("%d", subscriptionID),
-		}, body)
+		})
 	}
 	return err
 }
 
 // RemoveDelayedSubscriptionCancellation removes a delayed cancellation request, ensuring the subscription does not cancel
 func RemoveDelayedSubscriptionCancellation(subscriptionID int64) error {
-	_, err := makeCall(endpoints[endpointSubscriptionRemoveDelayedCancel], &map[string]string{
+	_, err := makeCall(endpoints[endpointSubscriptionRemoveDelayedCancel], nilBody, &map[string]string{
 		"subscriptionID": fmt.Sprintf("%d", subscriptionID),
-	}, nilBody)
+	})
 	return err
 }
 
@@ -121,17 +121,17 @@ func MigrateSubscription(targetProductHandle string, currentSubscriptionID int64
 		},
 	}
 
-	_, err := makeCall(endpoints[endpointSubscriptionMigrate], &map[string]string{
+	_, err := makeCall(endpoints[endpointSubscriptionMigrate], body, &map[string]string{
 		"subscriptionID": fmt.Sprintf("%d", currentSubscriptionID),
-	}, body)
+	})
 	return err
 }
 
 // GetSubscription gets a subscription. The docs show it comes back as an array, but as of this implementation it comes back as a map
 func GetSubscription(subscriptionID int64) (*Subscription, error) {
-	ret, err := makeCall(endpoints[endpointSubscriptionGet], &map[string]string{
+	ret, err := makeCall(endpoints[endpointSubscriptionGet], nilBody, &map[string]string{
 		"subscriptionID": fmt.Sprintf("%d", subscriptionID),
-	}, nilBody)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -147,9 +147,9 @@ func GetSubscription(subscriptionID int64) (*Subscription, error) {
 
 // GetSubscriptionMetaData gets the subscription metadata
 func GetSubscriptionMetaData(subscriptionID int64) (*MetaData, error) {
-	ret, err := makeCall(endpoints[endpointSubscriptionGetMetaData], &map[string]string{
+	ret, err := makeCall(endpoints[endpointSubscriptionGetMetaData], nilBody, &map[string]string{
 		"subscriptionID": fmt.Sprintf("%d", subscriptionID),
-	}, nilBody)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -174,9 +174,9 @@ func RefundSubscriptionPayment(subscriptionID string, paymentID string, amount s
 		},
 	}
 
-	ret, err := makeCall(endpoints[endpointSubscriptionRefund], &map[string]string{
+	ret, err := makeCall(endpoints[endpointSubscriptionRefund], body, &map[string]string{
 		"subscriptionID": subscriptionID,
-	}, body)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -195,9 +195,9 @@ func ListSubscriptionEvents(subscriptionID int, queryParams *ListSubscriptionEve
 	structs.DefaultTagName = "mapstructure"
 	m := structs.Map(queryParams)
 	body := internal.ToMapStringToString(m)
-	ret, err := makeCall(endpoints[endpointSubscriptionEvents], &map[string]string{
+	ret, err := makeCall(endpoints[endpointSubscriptionEvents], body, &map[string]string{
 		"subscriptionID": fmt.Sprintf("%d", subscriptionID),
-	}, body)
+	})
 	if err != nil || ret.HTTPCode != http.StatusOK {
 		return nil, err
 	}

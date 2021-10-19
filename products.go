@@ -124,7 +124,7 @@ func CreateProductFamily(name, description, handle string, accountingCode string
 		"product_family": *family,
 	}
 
-	ret, err := makeCall(endpoints[endpointProductFamilyCreate], nil, body)
+	ret, err := makeCall(endpoints[endpointProductFamilyCreate], body, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -141,7 +141,7 @@ func CreateProductFamily(name, description, handle string, accountingCode string
 func GetProductFamilies() ([]ProductFamily, error) {
 	found := []ProductFamily{}
 
-	ret, err := makeCall(endpoints[endpointProductFamiliesGet], &map[string]string{}, nilBody)
+	ret, err := makeCall(endpoints[endpointProductFamiliesGet], nilBody, &map[string]string{})
 	if err != nil || ret.HTTPCode != http.StatusOK {
 		return found, err
 	}
@@ -165,9 +165,9 @@ func GetProductFamilies() ([]ProductFamily, error) {
 func GetProductFamilyComponents(id int64) ([]Component, error) {
 	found := []Component{}
 
-	ret, err := makeCall(endpoints[endpointProductFamilyComponentsGet], &map[string]string{
+	ret, err := makeCall(endpoints[endpointProductFamilyComponentsGet], nilBody, &map[string]string{
 		"product_family_id": fmt.Sprintf("%d", id),
-	}, nilBody)
+	})
 	if err != nil || ret.HTTPCode != http.StatusOK {
 		return found, err
 	}
@@ -190,10 +190,10 @@ func GetProductFamilyComponents(id int64) ([]Component, error) {
 // GetProductFamilyComponentByHandle gets components in a family
 func GetProductFamilyComponentByHandle(familyID int64, handle string) (*Component, error) {
 
-	ret, err := makeCall(endpoints[endpointProductFamilyComponentByHandleGet], &map[string]string{
+	ret, err := makeCall(endpoints[endpointProductFamilyComponentByHandleGet], nilBody, &map[string]string{
 		"product_family_id": fmt.Sprintf("%d", familyID),
 		"component_handle":  handle,
-	}, nilBody)
+	})
 	if err != nil || ret.HTTPCode != http.StatusOK {
 		return nil, err
 	}
@@ -212,10 +212,10 @@ func GetProductFamilyComponentByHandle(familyID int64, handle string) (*Componen
 // GetProductFamilyProducts gets products in a family
 func GetProductFamilyComponentById(familyID int64, componentID int64) (*Component, error) {
 
-	ret, err := makeCall(endpoints[endpointProductFamilyComponentByIdGet], &map[string]string{
+	ret, err := makeCall(endpoints[endpointProductFamilyComponentByIdGet], nilBody, &map[string]string{
 		"product_family_id": fmt.Sprintf("%d", familyID),
 		"component_id":      fmt.Sprintf("%d", componentID),
-	}, nilBody)
+	})
 	if err != nil || ret.HTTPCode != http.StatusOK {
 		return nil, err
 	}
@@ -235,9 +235,9 @@ func GetProductFamilyComponentById(familyID int64, componentID int64) (*Componen
 func GetProductFamilyProducts(id int64) ([]Product, error) {
 	found := []Product{}
 
-	ret, err := makeCall(endpoints[endpointProductFamilyProductsGet], &map[string]string{
+	ret, err := makeCall(endpoints[endpointProductFamilyProductsGet], nilBody, &map[string]string{
 		"id": fmt.Sprintf("%d", id),
-	}, nilBody)
+	})
 	if err != nil || ret.HTTPCode != http.StatusOK {
 		return found, err
 	}
@@ -260,9 +260,9 @@ func GetProductFamilyProducts(id int64) ([]Product, error) {
 // GetProductFamily gets a product family
 func GetProductFamily(productFamilyID int64) (*ProductFamily, error) {
 	family := &ProductFamily{}
-	ret, err := makeCall(endpoints[endpointProductFamilyGet], &map[string]string{
+	ret, err := makeCall(endpoints[endpointProductFamilyGet], nilBody, &map[string]string{
 		"id": fmt.Sprintf("%d", productFamilyID),
-	}, nilBody)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -289,9 +289,9 @@ func CreateProduct(productFamilyID int64, input *Product) error {
 		"product": *input,
 	}
 
-	ret, err := makeCall(endpoints[endpointProductCreate], &map[string]string{
+	ret, err := makeCall(endpoints[endpointProductCreate], body, &map[string]string{
 		"familyID": fmt.Sprintf("%d", productFamilyID),
-	}, body)
+	})
 	if err != nil {
 		return err
 	}
@@ -307,9 +307,9 @@ func CreateProduct(productFamilyID int64, input *Product) error {
 // GetProductByID gets a single product by id
 func GetProductByID(productID int64) (*Product, error) {
 	product := &Product{}
-	ret, err := makeCall(endpoints[endpointProductGetByID], &map[string]string{
+	ret, err := makeCall(endpoints[endpointProductGetByID], nilBody, &map[string]string{
 		"id": fmt.Sprintf("%d", productID),
-	}, nilBody)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -324,9 +324,9 @@ func GetProductByID(productID int64) (*Product, error) {
 // GetProductsInFamily gets all of the products in a family
 func GetProductsInFamily(productFamilyID int64) ([]Product, error) {
 	products := []Product{}
-	ret, err := makeCall(endpoints[endpointProductGetForFamily], &map[string]string{
+	ret, err := makeCall(endpoints[endpointProductGetForFamily], nilBody, &map[string]string{
 		"familyID": fmt.Sprintf("%d", productFamilyID),
-	}, nilBody)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -348,9 +348,9 @@ func GetProductsInFamily(productFamilyID int64) ([]Product, error) {
 // GetProductByHandle gets a product by its handle
 func GetProductByHandle(handle string) (*Product, error) {
 	product := &Product{}
-	ret, err := makeCall(endpoints[endpointProductGetByHandle], &map[string]string{
+	ret, err := makeCall(endpoints[endpointProductGetByHandle], nilBody, &map[string]string{
 		"handle": handle,
-	}, nilBody)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -368,17 +368,17 @@ func UpdateProduct(productID int64, input *Product) error {
 		"product": *input,
 	}
 
-	_, err := makeCall(endpoints[endpointProductUpdate], &map[string]string{
+	_, err := makeCall(endpoints[endpointProductUpdate], body, &map[string]string{
 		"productID": fmt.Sprintf("%d", productID),
-	}, body)
+	})
 	return err
 }
 
 // ArchiveProduct archives a product
 func ArchiveProduct(productID int64) error {
-	_, err := makeCall(endpoints[endpointProductArchive], &map[string]string{
+	_, err := makeCall(endpoints[endpointProductArchive], nilBody, &map[string]string{
 		"id": fmt.Sprintf("%d", productID),
-	}, nilBody)
+	})
 	return err
 }
 

@@ -24,11 +24,7 @@ var (
 	nilBody interface{}
 )
 
-func makeCall(
-	end endpoint,
-	pathParams *map[string]string,
-	body interface{},
-) (ret APIReturn, err error) {
+func makeCall(end endpoint, body interface{}, pathParams *map[string]string) (ret APIReturn, err error) {
 	options := makeCallOptions{
 		End:        end,
 		Root:       config.root,
@@ -38,11 +34,7 @@ func makeCall(
 	return options.makeCallEx()
 }
 
-func makeEventsCall(
-	end endpoint,
-	pathParams *map[string]string,
-	queryParams *map[string]string,
-	body interface{}) (ret APIReturn, err error) {
+func makeEventsCall(end endpoint, body interface{}, pathParams *map[string]string, queryParams *map[string]string) (ret APIReturn, err error) {
 	options := makeCallOptions{
 		End:         end,
 		Root:        config.eventsRoot,

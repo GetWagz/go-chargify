@@ -254,10 +254,10 @@ func execute() error {
 	var err error
 
 	if bulkIngest {
-		err = goChargify.PostBulkEventsIngestion(&pathParams, &queryParams, body)
+		err = goChargify.PostBulkEventsIngestion(body, &pathParams, &queryParams)
 
 	} else {
-		err = goChargify.PostEventsIngestion(&pathParams, &queryParams, body)
+		err = goChargify.PostEventsIngestion(body, &pathParams, &queryParams)
 	}
 
 	if err != nil {

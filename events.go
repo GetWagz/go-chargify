@@ -69,7 +69,7 @@ func ListEvents(queryParams *ListEventsQueryParams) (found []Event, err error) {
 	structs.DefaultTagName = "mapstructure"
 	m := structs.Map(queryParams)
 	body := internal.ToMapStringToString(m)
-	ret, err := makeCall(endpoints[endpointEvents], &map[string]string{}, body)
+	ret, err := makeCall(endpoints[endpointEvents], body, &map[string]string{})
 	if err != nil || ret.HTTPCode != http.StatusOK {
 		return nil, err
 	}
@@ -93,7 +93,7 @@ func GetEventsCount(queryParams *ListEventsCountQueryParams) (response *Count, e
 	structs.DefaultTagName = "mapstructure"
 	m := structs.Map(queryParams)
 	body := internal.ToMapStringToString(m)
-	ret, err := makeCall(endpoints[endpointEventsCount], &map[string]string{}, body)
+	ret, err := makeCall(endpoints[endpointEventsCount], body, &map[string]string{})
 	if err != nil || ret.HTTPCode != http.StatusOK {
 		return nil, err
 	}
@@ -108,7 +108,7 @@ func GetEventsCount(queryParams *ListEventsCountQueryParams) (response *Count, e
 }
 
 // PostEventsInjestion ...
-func PostEventsIngestion(pathParams *map[string]string, queryParams *EventsIngestQueryParams, body interface{}) error {
+func PostEventsIngestion(body interface{}, pathParams *map[string]string, queryParams *EventsIngestQueryParams) error {
 	var qP *map[string]string
 	if queryParams != nil {
 		structs.DefaultTagName = "mapstructure"
@@ -116,7 +116,7 @@ func PostEventsIngestion(pathParams *map[string]string, queryParams *EventsInges
 		m2 := internal.ToMapStringToString(m)
 		qP = &m2
 	}
-	ret, err := makeEventsCall(endpoints[endpointEventIngestion], pathParams, qP, body)
+	ret, err := makeEventsCall(endpoints[endpointEventIngestion], body, pathParams, qP)
 	if err != nil || ret.HTTPCode != http.StatusOK {
 		return err
 	}
@@ -124,7 +124,7 @@ func PostEventsIngestion(pathParams *map[string]string, queryParams *EventsInges
 }
 
 // PostBulkEventsIngestion ...
-func PostBulkEventsIngestion(pathParams *map[string]string, queryParams *EventsIngestQueryParams, body interface{}) error {
+func PostBulkEventsIngestion(body interface{}, pathParams *map[string]string, queryParams *EventsIngestQueryParams) error {
 	var qP *map[string]string
 	if queryParams != nil {
 		structs.DefaultTagName = "mapstructure"
@@ -132,7 +132,7 @@ func PostBulkEventsIngestion(pathParams *map[string]string, queryParams *EventsI
 		m2 := internal.ToMapStringToString(m)
 		qP = &m2
 	}
-	ret, err := makeEventsCall(endpoints[endpointBulkEventIngestion], pathParams, qP, body)
+	ret, err := makeEventsCall(endpoints[endpointBulkEventIngestion], body, pathParams, qP)
 	if err != nil || ret.HTTPCode != http.StatusOK {
 		return err
 	}
