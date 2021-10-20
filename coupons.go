@@ -61,12 +61,13 @@ type Coupon struct {
 }
 
 // CreateCoupon creates a new percent based coupon
-func CreatePercentageCoupon(productFamilyID int64, input *PercentageCoupon) error {
+func CreatePercentageCoupon(productFamilyID int64, input *PercentageCoupon) (*PercentageCouponReturn, error) {
+	handleRet := PercentageCouponReturn{}
 	if input.Name == "" || input.Code == "" || input.Recurring == "" {
-		return errors.New("name, code, and recurring are required")
+		return &handleRet, errors.New("name, code, and recurring are required")
 	}
 	if input.Percentage <= 0 {
-		return errors.New("a value greater than 0 must be included for percentage")
+		return &handleRet, errors.New("a value greater than 0 must be included for percentage")
 	}
 
 	input.ProductFamilyID = fmt.Sprintf("%d", productFamilyID)
@@ -78,25 +79,25 @@ func CreatePercentageCoupon(productFamilyID int64, input *PercentageCoupon) erro
 		"familyID": fmt.Sprintf("%d", productFamilyID),
 	})
 	if err != nil {
-		return err
+		return &handleRet, err
 	}
 
 	apiBody, bodyOK := ret.Body.(map[string]interface{})
 	if !bodyOK {
-		return errors.New("could not understand server response")
+		return &handleRet, errors.New("could not understand server response")
 	}
-	handleRet := PercentageCouponReturn{}
 	err = mapstructure.Decode(apiBody["coupon"], &handleRet)
-	return err
+	return &handleRet, err
 }
 
 // CreateFlatCoupon creates a new flat rate coupon
-func CreateFlatCoupon(productFamilyID int64, input *FlatCoupon) error {
+func CreateFlatCoupon(productFamilyID int64, input *FlatCoupon) (*FlatCouponReturn, error) {
+	handleRet := FlatCouponReturn{}
 	if input.Name == "" || input.Code == "" || input.Recurring == "" {
-		return errors.New("name, code, and recurring are required")
+		return &handleRet, errors.New("name, code, and recurring are required")
 	}
 	if input.AmountInCents <= 0 {
-		return errors.New("a value greater than 0 must be included for amount_in_cents")
+		return &handleRet, errors.New("a value greater than 0 must be included for amount_in_cents")
 	}
 
 	input.ProductFamilyID = fmt.Sprintf("%d", productFamilyID)
@@ -108,16 +109,16 @@ func CreateFlatCoupon(productFamilyID int64, input *FlatCoupon) error {
 		"familyID": fmt.Sprintf("%d", productFamilyID),
 	})
 	if err != nil {
-		return err
+		return &handleRet, err
 	}
 
 	apiBody, bodyOK := ret.Body.(map[string]interface{})
 	if !bodyOK {
-		return errors.New("could not understand server response")
+		return &handleRet, errors.New("could not understand server response")
 	}
 	handleRet := FlatCouponReturn{}
 	err = mapstructure.Decode(apiBody["coupon"], &handleRet)
-	return err
+	return &handleRet, err
 }
 
 // GetCouponByCode gets a coupon by its code
