@@ -86,7 +86,7 @@ func CreatePercentageCoupon(productFamilyID int64, input *PercentageCoupon) (*Pe
 	if !bodyOK {
 		return &handleRet, errors.New("could not understand server response")
 	}
-	err = mapstructure.Decode(apiBody["coupon"], &handleRet)
+	err := mapstructure.Decode(apiBody["coupon"], &handleRet)
 	return &handleRet, err
 }
 
@@ -116,7 +116,7 @@ func CreateFlatCoupon(productFamilyID int64, input *FlatCoupon) (*FlatCouponRetu
 	if !bodyOK {
 		return &handleRet, errors.New("could not understand server response")
 	}
-	err = mapstructure.Decode(apiBody["coupon"], &handleRet)
+	err := mapstructure.Decode(apiBody["coupon"], &handleRet)
 	return &handleRet, err
 }
 
