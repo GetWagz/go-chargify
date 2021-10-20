@@ -48,7 +48,7 @@ type FlatCouponReturn struct {
 	ProductFamilyID float64 `json:"product_family_id" mapstructure:"product_family_id"` //	The id for the product family
 }
 
-// Coupon is what we give back on the request
+// Coupon is a coupons structure
 type Coupon struct {
 	ID              int64  `json:"id"`
 	Name            string `json:"name" mapstructure:"name"`                           //	The coupon name
@@ -58,6 +58,18 @@ type Coupon struct {
 	AmountInCents   int64  `json:"amount_in_cents" mapstructure:"amount_in_cents"`     //	The amount_in_cents value of the coupon
 	Recurring       string `json:"recurring" mapstructure:"recurring"`                 //	A string value for the boolean of whether or not this coupon is recurring
 	ProductFamilyID string `json:"product_family_id" mapstructure:"product_family_id"` //	The id for the product family
+}
+
+// CouponReturn is what we give back on the request
+type CouponReturn struct {
+	ID              int64   `json:"id"`
+	Name            string  `json:"name" mapstructure:"name"`                           //	The coupon name
+	Code            string  `json:"code" mapstructure:"code"`                           //	The coupon code
+	Description     string  `json:"description" mapstructure:"description"`             // The (optionally required?) description for the coupon
+	Percentage      int     `json:"percentage" mapstructure:"percentage"`               //	The percentage value of the coupon
+	AmountInCents   int64   `json:"amount_in_cents" mapstructure:"amount_in_cents"`     //	The amount_in_cents value of the coupon
+	Recurring       bool    `json:"recurring" mapstructure:"recurring"`                 //	A string value for the boolean of whether or not this coupon is recurring
+	ProductFamilyID float64 `json:"product_family_id" mapstructure:"product_family_id"` //	The id for the product family
 }
 
 // CreateCoupon creates a new percent based coupon
