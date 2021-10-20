@@ -133,8 +133,8 @@ func CreateFlatCoupon(productFamilyID int64, input *FlatCoupon) (*FlatCouponRetu
 }
 
 // GetCouponByCode gets a coupon by its code
-func GetCouponByCode(productFamilyID int64, code string) (*Coupon, error) {
-	coupon := &Coupon{}
+func GetCouponByCode(productFamilyID int64, code string) (*CouponReturn, error) {
+	coupon := &CouponReturn{}
 	ret, err := makeCall(endpoints[endpointCouponGetByCode], nil, &map[string]string{
 		"familyID": fmt.Sprintf("%d", productFamilyID),
 		"code":     fmt.Sprintf("%s", code),
