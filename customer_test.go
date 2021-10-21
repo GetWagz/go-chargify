@@ -24,13 +24,19 @@ func TestCustomerCreation(t *testing.T) {
 	assert.Equal(t, input.Reference, customer.Reference)
 
 	found, err := GetCustomers(1, "asc")
+	assert.Nil(t, err)
+	require.NotNil(t, found)
 
 	updatedInput := Customer{
-		ID:      customer.ID,
-		Address: "123 Main Street",
-		City:    "Portsmouth",
-		State:   "NH",
-		Zip:     "03801",
+		ID:        customer.ID,
+		FirstName: fmt.Sprintf("First-%d", customID),
+		LastName:  fmt.Sprintf("Last-%d", customID),
+		Email:     fmt.Sprintf("test+%d@example.com", customID),
+		Reference: fmt.Sprintf("test-lib-%d", customID),
+		Address:   "123 Main Street",
+		City:      "Portsmouth",
+		State:     "NH",
+		Zip:       "03801",
 	}
 
 	err = UpdateCustomer(&updatedInput)

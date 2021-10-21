@@ -90,6 +90,7 @@ func makeCallEx(options *makeCallOptions) (ret APIReturn, err error) {
 
 			if queryParams != nil {
 				mergedParams := internal.MergeStringToStringMap(*queryParams, params)
+				fmt.Printf("\n%+v\n%+v\n%+v\n", queryParams, params, mergedParams)
 				httpRequest.SetQueryParams(mergedParams)
 			} else {
 				httpRequest.SetQueryParams(params)

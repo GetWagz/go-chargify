@@ -66,7 +66,7 @@ type CouponReturn struct {
 	Name            string  `json:"name" mapstructure:"name"`                           //	The coupon name
 	Code            string  `json:"code" mapstructure:"code"`                           //	The coupon code
 	Description     string  `json:"description" mapstructure:"description"`             // The (optionally required?) description for the coupon
-	Percentage      int     `json:"percentage" mapstructure:"percentage"`               //	The percentage value of the coupon
+	Percentage      string  `json:"percentage" mapstructure:"percentage"`               //	The percentage value of the coupon
 	AmountInCents   int64   `json:"amount_in_cents" mapstructure:"amount_in_cents"`     //	The amount_in_cents value of the coupon
 	Recurring       bool    `json:"recurring" mapstructure:"recurring"`                 //	A string value for the boolean of whether or not this coupon is recurring
 	ProductFamilyID float64 `json:"product_family_id" mapstructure:"product_family_id"` //	The id for the product family
@@ -135,10 +135,10 @@ func CreateFlatCoupon(productFamilyID int64, input *FlatCoupon) (*FlatCouponRetu
 // GetCouponByCode gets a coupon by its code
 func GetCouponByCode(productFamilyID int64, code string) (*CouponReturn, error) {
 	coupon := &CouponReturn{}
-	ret, err := makeCall(endpoints[endpointCouponGetByCode], nil, &map[string]string{
+	ret, err := makeCall(endpoints[endpointCouponGetByCode], map[string]string{
 		"familyID": fmt.Sprintf("%d", productFamilyID),
-		"code":     fmt.Sprintf("%s", code),
-	})
+		"code":     code,
+	}, nil)
 	if err != nil {
 		return nil, err
 	}

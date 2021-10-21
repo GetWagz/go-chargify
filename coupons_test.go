@@ -20,10 +20,13 @@ func TestCouponCRD(t *testing.T) {
 		ProductFamilyID: fmt.Sprintf("%d", 1182341),
 	}
 
-	err := CreatePercentageCoupon(1182341, &input)
+	created, err := CreatePercentageCoupon(1182341, &input)
 	require.Nil(t, err)
+	require.NotNil(t, created)
 
 	found, err := GetCouponByCode(1182341, input.Code)
+	assert.Nil(t, err)
+	require.NotNil(t, found)
 
 	err = ArchiveCoupon(1182341, found.ID)
 	assert.Nil(t, err)
@@ -37,10 +40,13 @@ func TestCouponCRD(t *testing.T) {
 		ProductFamilyID: fmt.Sprintf("%d", 1182341),
 	}
 
-	err = CreateFlatCoupon(1182341, &inputFlat)
+	createdFlat, err := CreateFlatCoupon(1182341, &inputFlat)
 	require.Nil(t, err)
+	require.NotNil(t, createdFlat)
 
 	found, err = GetCouponByCode(1182341, inputFlat.Code)
+	assert.Nil(t, err)
+	require.NotNil(t, found)
 
 	err = ArchiveCoupon(1182341, found.ID)
 	assert.Nil(t, err)
