@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
+	"net/http"
 	"time"
 
 	"github.com/mitchellh/mapstructure"
@@ -18,6 +19,46 @@ var (
 	// ProductIntervalDay represents an interval of day
 	ProductIntervalDay ProductInterval = "day"
 )
+
+// Component represents a single component
+type Component struct {
+	ID                        int64   `json:"id"`
+	Name                      string  `json:"name" mapstructure:"name"`
+	Handle                    string  `json:"handle" mapstructure:"handle"`
+	Description               string  `json:"description" mapstructure:"description"`
+	PricingScheme             string  `json:"pricing_scheme" mapstructure:"pricing_scheme"`
+	UnitName                  string  `json:"unit_name" mapstructure:"unit_name"`
+	UnitPrice                 *string `json:"unit_price" mapstructure:"unit_price"`
+	ProductFamilyID           int64   `json:"product_family_id" mapstructure:"product_family_id"`
+	ProductFamilyName         string  `json:"product_family_name" mapstructure:"product_family_name"`
+	Kind                      string  `json:"kind" mapstructure:"kind"`
+	Archived                  bool    `json:"archived" mapstructure:"archived"`
+	Taxable                   bool    `json:"taxable" mapstructure:"taxable"`
+	DefaultPricePointID       int64   `json:"default_price_point_id" mapstructure:"default_price_point_id"`
+	PricePointCount           int64   `json:"price_point_count" mapstructure:"price_point_count"`
+	PricePointsUrl            string  `json:"price_points_url" mapstructure:"price_points_url"`
+	TaxCode                   int64   `json:"tax_code" mapstructure:"tax_code"`
+	Recurring                 bool    `json:"recurring" mapstructure:"recurring"`
+	UpgradeCharge             *string `json:"upgrade_charge" mapstructure:"upgrade_charge"`
+	DowngradeCredit           *string `json:"downgrade_credit" mapstructure:"downgrade_credit"`
+	DefaultPricePointName     string  `json:"default_price_point_name" mapstructure:"default_price_point_name"`
+	HideDateRangeOnInvoice    bool    `json:"hide_date_range_on_invoice" mapstructure:"hide_date_range_on_invoice"`
+	Prices                    []Price `json:"prices" mapstructure:"prices"`
+	OveragePrices             []Price `json:"overage_prices" mapstructure:"overage_prices"`
+	CreatedAt                 string  `json:"created_at" mapstructure:"created_at"`
+	UpdatedAt                 string  `json:"updated_at" mapstructure:"updated_at"`
+	AllowFractionalQuantities bool    `json:"allow_fractional_quantities" mapstructure:"allow_fractional_quantities"`
+}
+
+type Price struct {
+	ID                 int64  `json:"id"`
+	ComponentID        int64  `json:"component_id" mapstructure:"component_id"`
+	StartingQuantity   int64  `json:"starting_quantity" mapstructure:"starting_quantity"`
+	EndingQuantity     int64  `json:"ending_quantity" mapstructure:"ending_quantity"`
+	UnitPrice          string `json:"unit_price" mapstructure:"unit_price"`
+	PricePointID       int64  `json:"price_point_id" mapstructure:"price_point_id"`
+	FormattedUnitPrice string `json:"formatted_unit_price" mapstructure:"formatted_unit_price"`
+}
 
 // Product represents a single product
 type Product struct {
@@ -46,23 +87,26 @@ type Product struct {
 	SignupPages             *[]SignupPage   `json:"public_signup_pages" mapstructure:"public_signup_pages"`             // An array of signup pages
 	AutoCreateSignupPage    bool            `json:"auto_create_signup_page" mapstructure:"auto_create_signup_page"`     // Whether or not to create a signup page
 	TaxCode                 string          `json:"tax_code" mapstructure:"tax_code"`                                   // A string representing the tax code related to the product type. This is especially important when using the Avalara service to tax based on locale. This attribute has a max length of 10 characters.
+
 }
 
 // SignupPage represents a product's signup page, if needed
 type SignupPage struct {
-	ID           int64  `json:"id"`            // The id of the signup page (public_signup_pages only)
-	URL          string `json:"url"`           // The url where the signup page can be viewed (public_signup_pages only)
-	ReturnURL    string `json:"return_url"`    // The url to which a customer will be returned after a successful signup (public_signup_pages only)
-	ReturnParams string `json:"return_params"` // The params to be appended to the return_url (public_signup_pages only)
+	ID           int64  `json:"id"`                                         // The id of the signup page (public_signup_pages only)
+	URL          string `json:"url" mapstructure:"url"`                     // The url where the signup page can be viewed (public_signup_pages only)
+	ReturnURL    string `json:"return_url" mapstructure:"return_url"`       // The url to which a customer will be returned after a successful signup (public_signup_pages only)
+	ReturnParams string `json:"return_params" mapstructure:"return_params"` // The params to be appended to the return_url (public_signup_pages only)
 }
 
 // ProductFamily represents a product family
 type ProductFamily struct {
 	ID             int64  `json:"id"`
-	Name           string `json:"name"`            //	The product family name
-	Handle         string `json:"handle"`          //	The product family API handle
-	AccountingCode string `json:"accounting_code"` // The product family accounting code (has no bearing in Chargify, may be used within your app)
-	Description    string `json:"description"`     // The product family description
+	Name           string `json:"name" mapstructure:"name"`                       //	The product family name
+	Handle         string `json:"handle" mapstructure:"handle"`                   //	The product family API handle
+	AccountingCode string `json:"accounting_code" mapstructure:"accounting_code"` // The product family accounting code (has no bearing in Chargify, may be used within your app)
+	Description    string `json:"description" mapstructure:"description"`         // The product family description
+	CreatedAt      string `json:"created_at" mapstructure:"created_at"`
+	UpdatedAt      string `json:"updated_at" mapstructure:"updated_at"`
 }
 
 // CreateProductFamily creates a new product family
@@ -91,6 +135,126 @@ func CreateProductFamily(name, description, handle string, accountingCode string
 	}
 	err = mapstructure.Decode(apiBody["product_family"], family)
 	return family, err
+}
+
+// GetProductFamily gets a product family
+func GetProductFamilies() ([]ProductFamily, error) {
+	found := []ProductFamily{}
+
+	ret, err := makeCall(endpoints[endpointProductFamiliesGet], nil, &map[string]string{})
+	if err != nil || ret.HTTPCode != http.StatusOK {
+		return found, err
+	}
+
+	temp := ret.Body.([]interface{})
+	for i := range temp {
+		entity := ProductFamily{}
+		entry := temp[i].(map[string]interface{})
+		entityRaw := entry["product_family"]
+		err = mapstructure.Decode(entityRaw, &entity)
+		if err != nil {
+			return []ProductFamily{}, err
+		}
+		found = append(found, entity)
+	}
+
+	return found, err
+}
+
+// GetProductFamilyProducts gets products in a family
+func GetProductFamilyComponents(id int64) ([]Component, error) {
+	found := []Component{}
+
+	ret, err := makeCall(endpoints[endpointProductFamilyComponentsGet], nil, &map[string]string{
+		"product_family_id": fmt.Sprintf("%d", id),
+	})
+	if err != nil || ret.HTTPCode != http.StatusOK {
+		return found, err
+	}
+
+	temp := ret.Body.([]interface{})
+	for i := range temp {
+		entity := Component{}
+		entry := temp[i].(map[string]interface{})
+		entityRaw := entry["component"]
+		err = mapstructure.Decode(entityRaw, &entity)
+		if err != nil {
+			return []Component{}, err
+		}
+		found = append(found, entity)
+	}
+
+	return found, err
+}
+
+// GetProductFamilyComponentByHandle gets components in a family
+func GetProductFamilyComponentByHandle(familyID int64, handle string) (*Component, error) {
+
+	ret, err := makeCall(endpoints[endpointProductFamilyComponentByHandleGet], nil, &map[string]string{
+		"product_family_id": fmt.Sprintf("%d", familyID),
+		"component_handle":  handle,
+	})
+	if err != nil || ret.HTTPCode != http.StatusOK {
+		return nil, err
+	}
+
+	entity := Component{}
+	entry := ret.Body.(map[string]interface{})
+	entityRaw := entry["component"]
+	err = mapstructure.Decode(entityRaw, &entity)
+	if err != nil {
+		return nil, err
+	}
+
+	return &entity, err
+}
+
+// GetProductFamilyProducts gets products in a family
+func GetProductFamilyComponentById(familyID int64, componentID int64) (*Component, error) {
+
+	ret, err := makeCall(endpoints[endpointProductFamilyComponentByIdGet], nil, &map[string]string{
+		"product_family_id": fmt.Sprintf("%d", familyID),
+		"component_id":      fmt.Sprintf("%d", componentID),
+	})
+	if err != nil || ret.HTTPCode != http.StatusOK {
+		return nil, err
+	}
+
+	entity := Component{}
+	entry := ret.Body.(map[string]interface{})
+	entityRaw := entry["component"]
+	err = mapstructure.Decode(entityRaw, &entity)
+	if err != nil {
+		return nil, err
+	}
+
+	return &entity, err
+}
+
+// GetProductFamilyProducts gets products in a family
+func GetProductFamilyProducts(id int64) ([]Product, error) {
+	found := []Product{}
+
+	ret, err := makeCall(endpoints[endpointProductFamilyProductsGet], nil, &map[string]string{
+		"id": fmt.Sprintf("%d", id),
+	})
+	if err != nil || ret.HTTPCode != http.StatusOK {
+		return found, err
+	}
+
+	temp := ret.Body.([]interface{})
+	for i := range temp {
+		entity := Product{}
+		entry := temp[i].(map[string]interface{})
+		entityRaw := entry["product"]
+		err = mapstructure.Decode(entityRaw, &entity)
+		if err != nil {
+			return []Product{}, err
+		}
+		found = append(found, entity)
+	}
+
+	return found, err
 }
 
 // GetProductFamily gets a product family
