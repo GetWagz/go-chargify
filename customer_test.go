@@ -24,6 +24,8 @@ func TestCustomerCreation(t *testing.T) {
 	assert.Equal(t, input.Reference, customer.Reference)
 
 	found, err := GetCustomers(1, "asc")
+	assert.Nil(t, err)
+	require.NotNil(t, found)
 
 	updatedInput := Customer{
 		ID:      customer.ID,

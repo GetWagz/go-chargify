@@ -24,6 +24,8 @@ func TestCouponCRD(t *testing.T) {
 	require.Nil(t, err)
 
 	found, err := GetCouponByCode(1182341, input.Code)
+	assert.Nil(t, err)
+	require.NotNil(t, found)
 
 	err = ArchiveCoupon(1182341, found.ID)
 	assert.Nil(t, err)
@@ -41,6 +43,8 @@ func TestCouponCRD(t *testing.T) {
 	require.Nil(t, err)
 
 	found, err = GetCouponByCode(1182341, inputFlat.Code)
+	assert.Nil(t, err)
+	require.NotNil(t, found)
 
 	err = ArchiveCoupon(1182341, found.ID)
 	assert.Nil(t, err)

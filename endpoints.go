@@ -346,7 +346,7 @@ var endpoints = map[string]endpoint{
 	},
 	endpointSubscriptionComponentsUsages: {
 		method: http.MethodPost,
-		uri:    "subscriptions/{subscriptionID}/components/{componentID}}/usages.json",
+		uri:    "subscriptions/{subscriptionID}/components/{componentID}/usages.json",
 		pathParams: []string{
 			"{subscriptionID}",
 			"{componentID}",
@@ -382,12 +382,9 @@ var endpoints = map[string]endpoint{
 		},
 	},
 	endpointCouponGetByCode: {
-		method: http.MethodGet,
-		uri:    "coupons/find?code={code}&product_family_id={familyID}",
-		pathParams: []string{
-			"{code}",
-			"{familyID}",
-		},
+		method:     http.MethodGet,
+		uri:        "coupons/find",
+		pathParams: []string{},
 	},
 	endpointCouponArchive: {
 		method: http.MethodDelete,
