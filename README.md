@@ -25,6 +25,10 @@ a solution is provided in the official REST API:
 
 * Product Family
 
+## Moving CLI
+
+A recent PR included a CLI. We will be moving it out into a separate repository. Do not rely on using it in this repo.
+
 ## Other Libraries
 
 We use the following additional tools in this library, and thank the maintainers and contributors of those libraries:
