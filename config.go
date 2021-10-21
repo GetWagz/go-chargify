@@ -13,6 +13,7 @@ type configDetails struct {
 	environment string
 	subdomain   string
 	root        string
+	eventsRoot  string
 	apiKey      string
 }
 
@@ -33,6 +34,7 @@ func setup() (err error) {
 	}
 
 	config.root = fmt.Sprintf("https://%s.chargify.com/", config.subdomain)
+	config.eventsRoot = fmt.Sprintf("https://events.chargify.com/%s", config.subdomain)
 	return nil
 }
 
@@ -42,6 +44,7 @@ func SetCredentials(subdomain, apiKey string) {
 	config.subdomain = subdomain
 	config.apiKey = apiKey
 	config.root = fmt.Sprintf("https://%s.chargify.com/", config.subdomain)
+	config.eventsRoot = fmt.Sprintf("https://events.chargify.com/%s", config.subdomain)
 }
 
 func envHelper(variable, defaultValue string) string {
