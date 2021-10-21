@@ -123,10 +123,10 @@ func CreateFlatCoupon(productFamilyID int64, input *FlatCoupon) error {
 // GetCouponByCode gets a coupon by its code
 func GetCouponByCode(productFamilyID int64, code string) (*Coupon, error) {
 	coupon := &Coupon{}
-	ret, err := makeCall(endpoints[endpointCouponGetByCode], nil, &map[string]string{
+	ret, err := makeCall(endpoints[endpointCouponGetByCode], map[string]string{
 		"familyID": fmt.Sprintf("%d", productFamilyID),
-		"code":     fmt.Sprintf("%s", code),
-	})
+		"code":     code,
+	}, nil)
 	if err != nil {
 		return nil, err
 	}

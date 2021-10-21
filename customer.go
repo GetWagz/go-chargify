@@ -139,7 +139,7 @@ func GetCustomers(page int, sortDir string) (found []Customer, err error) {
 		return found, errors.New("page must be 1 or higher, not 0 indexed")
 	}
 
-	ret, err := makeCall(endpoints[endpointCustomersGet], &map[string]string{
+	ret, err := makeCall(endpoints[endpointCustomersGet], map[string]string{
 		"direction": sortDir,
 		"page":      fmt.Sprintf("%d", page),
 	}, nil)
