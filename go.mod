@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fatih/structs v1.1.0
-	github.com/go-resty/resty/v2 v2.3.0
+	github.com/go-resty/resty/v2 v2.6.0
 	github.com/mitchellh/mapstructure v1.4.2
 	github.com/stretchr/testify v1.7.0
 )
