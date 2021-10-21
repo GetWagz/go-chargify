@@ -40,6 +40,14 @@ We use the following additional tools in this library, and thank the maintainers
 * [Get Customers](https://reference.chargify.com/v1/customers/list-customers-for-a-site)
 * [Search for Customers](https://reference.chargify.com/v1/customers/search-for-customer)
 
+### Events
+
+* [List Events](https://reference.chargify.com/v1/events/list-events)
+* [List Events for Subscription](https://reference.chargify.com/v1/events/list-events-for-subscription)
+* [Total Event Count](https://reference.chargify.com/v1/events/total-event-count)
+* [Event Ingestion](https://reference.chargify.com/v1/events-based-billing/%2Fevent-ingestion)  
+* [Bulk Event Ingestion](https://reference.chargify.com/v1/events-based-billing/bulk-event-ingestion)
+
 ### Payment Profiles
 
 * [Create Payment Profile](https://reference.chargify.com/v1/payment-profiles/create-a-payment-profile)
@@ -49,6 +57,10 @@ We use the following additional tools in this library, and thank the maintainers
 
 * [Create Product Family](https://reference.chargify.com/v1/product-families/create-a-product)
 * [Get Product Family](https://reference.chargify.com/v1/product-families/list-product-family-via-chargify-id)
+* [Read Component By ID](https://reference.chargify.com/v1/components/read-component-by-id)
+* [Read Component By Handle](https://reference.chargify.com/v1/components/read-component-by-handle)
+* [List Comonents for Product Family](https://reference.chargify.com/v1/components/list-components-for-product-family)
+* [List Product Familiy via Site](https://reference.chargify.com/v1/product-families/list-product-family-via-site)
 
 ### Products
 

@@ -1,0 +1,53 @@
+name: Go
+
+on:
+  push:
+    branches-ignore: 
+      - 'dependabot/**' # Do not build dependabot branches automatically to avoid some hacked package stealing all our secrets https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
+    paths-ignore:
+      - 'README.md'
+      - 'build/README.md' 
+      - 'docs/**'
+      - '.vscode/**'
+      - '.github/dependabot.yml'
+env:
+  GO_VERSION: '1.17'
+jobs:
+ # Lint check, using https://github.com/mgechev/revive
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Run Revive Action by building from repository
+        uses: morphy2k/revive-action@v2
+        with:
+          config: ./revive.toml
+          name: "Linter"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # GitHub token for annotations
+          
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '^${{ env.GO_VERSION }}'
+
+    - name: go mod vendor
+      run: |
+        go mod vendor
+
+    - name: Build
+      run: go build -v ./...
+
+    - name: AutoCommit
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Apply mod vendor changes

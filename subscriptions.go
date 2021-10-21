@@ -3,7 +3,10 @@ package chargify
 import (
 	"errors"
 	"fmt"
+	"net/http"
 
+	"github.com/GetWagz/go-chargify/internal"
+	"github.com/fatih/structs"
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -29,6 +32,14 @@ type Subscription struct {
 	ReceivesInvoiceEmails         bool      `json:"receives_invoice_emails" mapstructure:"receives_invoice_emails"`                             // (Optional) Default: True - Whether or not this subscription is set to receive emails related to this subscription.
 	Customer                      *Customer `json:"customer,omitempty" mapstructure:"customer"`
 	Product                       *Product  `json:"product,omitempty" mapstructure:"product"`
+}
+type ListSubscriptionEventsQueryParams struct {
+	Page      *int    `json:"page,omitempty" mapstructure:"page,omitempty"`
+	PerPage   *int    `json:"per_page,omitempty" mapstructure:"per_page,omitempty"`
+	SinceID   *int    `json:"since_id,omitempty" mapstructure:"since_id,omitempty"`
+	MaxID     *int    `json:"max_id,omitempty" mapstructure:"max_id,omitempty"`
+	Direction *string `json:"direction,omitempty" mapstructure:"direction,omitempty"`
+	Filter    *string `json:"filter,omitempty" mapstructure:"filter,omitempty"`
 }
 
 // CreateSubscriptionForCustomer creates a new subscription. When creating a subscription, you must specify a product and a customer.
@@ -190,4 +201,30 @@ func RefundSubscriptionPayment(subscriptionID string, paymentID string, amount s
 	refund := &Refund{}
 	err = mapstructure.Decode(apiBody["refund"], refund)
 	return refund, err
+}
+
+// GetCustomerByID gets a customer by chargify id
+func ListSubscriptionEvents(subscriptionID int, queryParams *ListSubscriptionEventsQueryParams) (found []Event, err error) {
+	structs.DefaultTagName = "mapstructure"
+	m := structs.Map(queryParams)
+	body := internal.ToMapStringToString(m)
+	ret, err := makeCall(endpoints[endpointSubscriptionEvents], body, &map[string]string{
+		"subscriptionID": fmt.Sprintf("%d", subscriptionID),
+	})
+	if err != nil || ret.HTTPCode != http.StatusOK {
+		return nil, err
+	}
+
+	temp := ret.Body.([]interface{})
+	for i := range temp {
+		entry := temp[i].(map[string]interface{})
+		raw := entry["event"]
+		entity := Event{}
+		err = mapstructure.Decode(raw, &entity)
+		if err == nil {
+			found = append(found, entity)
+		}
+	}
+	return found, nil
+
 }
