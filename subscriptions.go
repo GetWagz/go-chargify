@@ -61,6 +61,9 @@ func CreateSubscriptionForCustomer(customerReference, productHandle string, paym
 		if subscriptionOptions.NextBillingAt != "" {
 			body["subscription"]["next_billing_at"] = subscriptionOptions.NextBillingAt
 		}
+		if subscriptionOptions.CouponCode != "" {
+			body["subscription"]["coupon_code"] = subscriptionOptions.CouponCode
+		}
 	}
 
 	ret, err := makeCall(endpoints[endpointSubscriptionCreate], body, nil)
