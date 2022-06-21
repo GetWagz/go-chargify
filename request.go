@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	nurl "net/url"
 	"reflect"
 	"strconv"
 	"strings"
@@ -20,6 +21,25 @@ type APIReturn struct {
 	Body       interface{} `json:"body"`
 }
 
+// makeCallOptions is an internal struct allowing for specifying the needed values for the API calls
+type makeCallOptions struct {
+	End              endpoint
+	Root             string
+	PathParams       *map[string]string
+	MultiQueryParams *map[string][]string
+	QueryParams      *map[string]string
+	Body             interface{}
+}
+
+// makeAPICall makes a remote call against the Chargify API
+func makeAPICall(options *makeCallOptions) (ret APIReturn, err error) {
+	if options == nil {
+		return APIReturn{}, errors.New("options must be specified")
+	}
+	return options.makeCallEx()
+}
+
+// makeCall should be deprecated and original calls should use the new makeAPICall func
 func makeCall(end endpoint, body interface{}, pathParams *map[string]string) (ret APIReturn, err error) {
 	options := makeCallOptions{
 		End:        end,
@@ -30,6 +50,7 @@ func makeCall(end endpoint, body interface{}, pathParams *map[string]string) (re
 	return options.makeCallEx()
 }
 
+// makeEventsCall should be deprecated and replaced with the makeAPICall func
 func makeEventsCall(end endpoint, body interface{}, pathParams *map[string]string, queryParams *map[string]string) (ret APIReturn, err error) {
 	options := makeCallOptions{
 		End:         end,
@@ -41,25 +62,18 @@ func makeEventsCall(end endpoint, body interface{}, pathParams *map[string]strin
 	return options.makeCallEx()
 }
 
-type makeCallOptions struct {
-	End         endpoint
-	Root        string
-	PathParams  *map[string]string
-	QueryParams *map[string]string
-	Body        interface{}
+func (o *makeCallOptions) makeCallEx() (ret APIReturn, err error) {
+	return executeAPICall(o)
 }
 
-func (o *makeCallOptions) makeCallEx() (ret APIReturn, err error) {
-	return makeCallEx(o)
-}
-func makeCallEx(options *makeCallOptions) (ret APIReturn, err error) {
+func executeAPICall(options *makeCallOptions) (ret APIReturn, err error) {
 	if config.subdomain == "" || config.apiKey == "" {
 		return ret, errors.New("configuration is invalid for chargify")
 	}
 	end := options.End
 	root := options.Root
 	pathParams := options.PathParams
-	queryParams := options.QueryParams
+
 	body := options.Body
 
 	endpointURI := end.uri
@@ -81,38 +95,29 @@ func makeCallEx(options *makeCallOptions) (ret APIReturn, err error) {
 		SetHeader("Content-Type", "application/json").
 		SetBasicAuth(config.apiKey, "x")
 
+	// set the query params
+	options.queryParamsHelper(httpRequest)
+
 	if end.method == http.MethodGet {
 		if body != nil {
+			// in this case, they must have set the body to the query params
+			// which was the original implementation, but should be removed eventually
 			params, paramsOK := body.(map[string]string)
 			if !paramsOK {
 				return ret, errors.New("get calls must send in a map[string]string body")
 			}
 
-			if queryParams != nil {
-				mergedParams := internal.MergeStringToStringMap(*queryParams, params)
-				fmt.Printf("\n%+v\n%+v\n%+v\n", queryParams, params, mergedParams)
-				httpRequest.SetQueryParams(mergedParams)
-			} else {
-				httpRequest.SetQueryParams(params)
+			// body wins out
+			for key, value := range params {
+				httpRequest.SetQueryParam(key, value)
 			}
 		}
 		response, err = httpRequest.Get(url)
 	} else if end.method == http.MethodPost {
-		if queryParams != nil {
-			httpRequest.SetQueryParams(*queryParams)
-		}
-		response, err = httpRequest.SetBody(body).
-			Post(url)
+		response, err = httpRequest.SetBody(body).Post(url)
 	} else if end.method == http.MethodPut {
-		if queryParams != nil {
-			httpRequest.SetQueryParams(*queryParams)
-		}
-		response, err = httpRequest.SetBody(body).
-			Put(url)
+		response, err = httpRequest.SetBody(body).Put(url)
 	} else if end.method == http.MethodDelete {
-		if queryParams != nil {
-			httpRequest.SetQueryParams(*queryParams)
-		}
 		response, err = httpRequest.Delete(url)
 	}
 
@@ -133,7 +138,7 @@ func makeCallEx(options *makeCallOptions) (ret APIReturn, err error) {
 		err = errors.New("chargify server error")
 	case http.StatusOK, http.StatusCreated:
 		err = json.Unmarshal(response.Body(), &ret.Body)
-		// sometimes, the response body is empty. Chargify is not sure why, so if the error if `unexpected end of JSON input` we will just return a map[string]{}
+		// sometimes, the response body is empty. Chargify is not sure why, so if the error is `unexpected end of JSON input` we will just return a map[string]{}
 
 		if err != nil {
 			if err.Error() == "unexpected end of JSON input" {
@@ -151,6 +156,23 @@ func makeCallEx(options *makeCallOptions) (ret APIReturn, err error) {
 	}
 
 	return
+}
+
+// queryParamsHelper will consolidate the query params on the request
+func (o *makeCallOptions) queryParamsHelper(httpRequest *resty.Request) {
+	// with the update to makeAPICall, we don't set query params in the body anymore
+	// so we just need to check the query params and the multi query params
+	if o.QueryParams != nil {
+		httpRequest.SetQueryParams(*o.QueryParams)
+	}
+
+	if o.MultiQueryParams != nil {
+		for key, value := range *o.MultiQueryParams {
+			httpRequest.SetQueryParamsFromValues(nurl.Values{
+				key: value,
+			})
+		}
+	}
 }
 
 func convertStructToMap(i interface{}) (result map[string]string) {

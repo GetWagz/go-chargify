@@ -231,3 +231,38 @@ func ListSubscriptionEvents(subscriptionID int, queryParams *ListSubscriptionEve
 	return found, nil
 
 }
+
+// PurgeSubscription purges a subscription from an account IN TEST MODE. This WILL NOT WORK on production environments.
+func PurgeSubscription(subscriptionID int64, customerID int64, cascadeCustomer bool, cascadePayment bool) error {
+	cascade := []string{}
+	if cascadeCustomer {
+		cascade = append(cascade, "customer")
+	}
+	if cascadePayment {
+		cascade = append(cascade, "payment_profile")
+	}
+
+	// note that we will eventually want to move the other calls to this cleaner approach at
+	// some point in the future
+	options := &makeCallOptions{
+		End: endpoints[endpointSubscriptionPurge],
+		MultiQueryParams: &map[string][]string{
+			"ack":     {fmt.Sprintf("%d", customerID)},
+			"cascade": cascade,
+		},
+		PathParams: &map[string]string{
+			"subscriptionID": fmt.Sprintf("%d", subscriptionID),
+		},
+	}
+
+	ret, err := makeAPICall(options)
+	if err != nil {
+		return err
+	}
+
+	// if successful, we can just return out from here
+	if ret.HTTPCode != http.StatusOK {
+		return fmt.Errorf("received a %d", ret.HTTPCode)
+	}
+	return nil
+}

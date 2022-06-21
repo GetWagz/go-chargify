@@ -21,9 +21,3 @@ We recommend you post your name as a ##, then a quick blurb about you, then your
 * Derry, NH
 
 * [My Site](https://www.andrewesherman.net)
-
-## Liz Lefavour
-
-* Dog Lover, Customer Service Manager
-
-* Manchester, NH

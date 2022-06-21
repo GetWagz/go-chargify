@@ -55,6 +55,7 @@ const (
 	endpointSubscriptionCancelImmediately   = "subscription_cancel_immediately"
 	endpointSubscriptionCancelDelayed       = "subscription_cancel_delayed"
 	endpointSubscriptionRemoveDelayedCancel = "subscription_remove_delayed_cancel"
+	endpointSubscriptionPurge               = "subscription_purge"
 
 	endpointSubscriptionMigrate   = "subscription_migrate"
 	endpointSubscriptionUpdateNow = "subscription_update_now"
@@ -350,6 +351,13 @@ var endpoints = map[string]endpoint{
 		pathParams: []string{
 			"{subscriptionID}",
 			"{componentID}",
+		},
+	},
+	endpointSubscriptionPurge: {
+		method: http.MethodPost,
+		uri:    "subscriptions/{subscriptionID}/purge.json",
+		pathParams: []string{
+			"{subscriptionID}",
 		},
 	},
 
