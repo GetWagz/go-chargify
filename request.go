@@ -25,6 +25,7 @@ type APIReturn struct {
 type makeCallOptions struct {
 	End              endpoint
 	Root             string
+	IsEvent          bool
 	PathParams       *map[string]string
 	MultiQueryParams *map[string][]string
 	QueryParams      *map[string]string
@@ -35,6 +36,14 @@ type makeCallOptions struct {
 func makeAPICall(options *makeCallOptions) (ret APIReturn, err error) {
 	if options == nil {
 		return APIReturn{}, errors.New("options must be specified")
+	}
+	// check if the root is blank; we allow overriding if they really want to
+	if options.Root == "" {
+		if options.IsEvent {
+			options.Root = config.eventsRoot
+		} else {
+			options.Root = config.root
+		}
 	}
 	return options.makeCallEx()
 }
@@ -62,6 +71,7 @@ func makeEventsCall(end endpoint, body interface{}, pathParams *map[string]strin
 	return options.makeCallEx()
 }
 
+// this is a helper if the options are set up and then called on the struct
 func (o *makeCallOptions) makeCallEx() (ret APIReturn, err error) {
 	return executeAPICall(o)
 }

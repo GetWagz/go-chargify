@@ -4,7 +4,8 @@
 
 This library is a small wrapper around a subset of the Chargify API.
 
-*Note: As of December 28th, 2020, this library is no longer actively maintained. New maintainers are welcome to email the Wagz engineering team to take lead over the library.*
+This library is actively used in production, however not all end points are used regularly. We do our best to keep up to date with changes, but focus primarily on our own
+needs. However, pull requests are always welcome!
 
 ## Usage
 
@@ -29,69 +30,76 @@ a solution is provided in the official REST API:
 
 A recent PR included a CLI. We will be moving it out into a separate repository. Do not rely on using it in this repo.
 
-## Other Libraries
+## Future Improvements
 
-We use the following additional tools in this library, and thank the maintainers and contributors of those libraries:
+The following are improvements we would like to make, or would like PRs to address (reach out to us first to make sure no one else has started working on it though!):
 
-* [testify](https://github.com/stretchr/testify) - Makes our unit tests more readable and management
+* [ ] Migrate all `makeCall` and `makeEventsCall` invocations to the new `makeAPICall` function. This includes modifying the INTERNAL allocation to the options struct.
+
+* [ ] Update calls to take options structs with pointers; add new functions where deprecation would occur so we can maintain backwards compatibility.
 
 ## Implemented Endpoints
 
+Note that Chargify changes their API doc URLs regularly, so we have stopped providing links directly to the end points.
+
 ### Customers
 
-* [Create Customer](https://reference.chargify.com/v1/customers/create-a-customer)
-* [Delete Customer](https://reference.chargify.com/v1/customers/delete-the-customer)
-* [Get Customers](https://reference.chargify.com/v1/customers/list-customers-for-a-site)
-* [Search for Customers](https://reference.chargify.com/v1/customers/search-for-customer)
+* Create Customer
+* Delete Customer
+* Get Customers
+* Search for Customers
 
 ### Events
 
-* [List Events](https://reference.chargify.com/v1/events/list-events)
-* [List Events for Subscription](https://reference.chargify.com/v1/events/list-events-for-subscription)
-* [Total Event Count](https://reference.chargify.com/v1/events/total-event-count)
-* [Event Ingestion](https://reference.chargify.com/v1/events-based-billing/%2Fevent-ingestion)  
-* [Bulk Event Ingestion](https://reference.chargify.com/v1/events-based-billing/bulk-event-ingestion)
+* List Events
+* List Events for Subscription
+* Total Event Count
+* Event Ingestion
+* Bulk Event Ingestion
 
 ### Payment Profiles
 
-* [Create Payment Profile](https://reference.chargify.com/v1/payment-profiles/create-a-payment-profile)
-* [Delete Payment Profile](https://reference.chargify.com/v1/payment-profiles/delete-payment-profile)
+* Create Payment Profile
+* Delete Payment Profile
 
 ### Product Families
 
-* [Create Product Family](https://reference.chargify.com/v1/product-families/create-a-product)
-* [Get Product Family](https://reference.chargify.com/v1/product-families/list-product-family-via-chargify-id)
-* [Read Component By ID](https://reference.chargify.com/v1/components/read-component-by-id)
-* [Read Component By Handle](https://reference.chargify.com/v1/components/read-component-by-handle)
-* [List Comonents for Product Family](https://reference.chargify.com/v1/components/list-components-for-product-family)
-* [List Product Familiy via Site](https://reference.chargify.com/v1/product-families/list-product-family-via-site)
+* Create Product Family
+* Get Product Family
+* Read Component By ID
+* Read Component By Handle
+* List Comonents for Product Family
+* List Product Familiy via Site
 
 ### Products
 
-* [Create a Product](https://reference.chargify.com/v1/products/create-a-product-1)
-* [Archive a Product](https://reference.chargify.com/v1/products/archive-a-product)
-* [Update a Product](https://reference.chargify.com/v1/products/update-a-product)
-* [Get a Product By ID](https://reference.chargify.com/v1/products/read-the-product-via-chargify-id)
-* [Get a Product By Handle](https://reference.chargify.com/v1/products/read-the-product-via-api-handle)
-* [Get a Product In Family](https://reference.chargify.com/v1/products/list-products)
+* Create a Product
+* Archive a Product
+* Update a Product
+* Get a Product By ID
+* Get a Product By Handle
+* Get a Product In Family
 
 ### Subscriptions
 
-* [Create Subscription](https://reference.chargify.com/v1/subscriptions/create-subscription)
-* [Update Subscription](https://reference.chargify.com/v1/subscriptions-product-changes-migrations-upgrades-downgrades)
-* [Cancel Subscription - Immediately](https://reference.chargify.com/v1/subscriptions-cancellations/cancel-subscription)
-* [Cancel Subscription - Delayed](https://reference.chargify.com/v1/subscriptions-cancellations/cancel-subscription-delayed-method-1)
-* [Remove Delayed Cancellation](https://reference.chargify.com/v1/subscriptions-cancellations/cancel-subscription-remove-delayed-method)
+* Create Subscription
+* Update Subscription
+* Cancel Subscription - Immediately
+* Cancel Subscription - Delayed
+* Remove Delayed Cancellation
+* List Subscriptions
+* Purge a Subscription (only works in test mode!)
 
 ### Coupons
 
-* [Create a Coupon](https://reference.chargify.com/v1/coupons/create-coupon)
-* [Find a Coupon](https://reference.chargify.com/v1/coupons/find-coupon)
-* [Archive a Coupon](https://reference.chargify.com/v1/coupons/archive-coupon)
+* Create a Coupon
+* Find a Coupon
+* Archive a Coupon
+* List Coupons
 
 ## Hiring
 
-Are you on the New Hampshire Seacoast and love Go, Typescript, Swift, or Java? Send an email to engineering@wagz.com and let's find out if we're a good match!
+Want to join an awesome team building cool products to improve the lives of pets and their owners? Send an email to engineering@wagz.com and let's find out if we're a good match! We are a remote-first company based in New Hampshire.
 
 ## Contributing
 
