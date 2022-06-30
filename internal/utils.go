@@ -26,7 +26,7 @@ func JSON(obj interface{}) string {
 	return string(jsonBytes)
 }
 
-// MergeStringToStringMap, last one wins on conflick
+// MergeStringToStringMap, last one wins on conflict
 func MergeStringToStringMap(ms ...map[string]string) map[string]string {
 	res := map[string]string{}
 	for _, m := range ms {

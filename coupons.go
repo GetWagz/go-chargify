@@ -3,6 +3,7 @@ package chargify
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/mitchellh/mapstructure"
 )
@@ -18,7 +19,6 @@ type PercentageCoupon struct {
 }
 
 // PercentageCouponReturn is here because Chargify send back different types than what it asks for
-
 type PercentageCouponReturn struct {
 	Name            string  `json:"name" mapstructure:"name"`                           //	The coupon name
 	Code            string  `json:"code" mapstructure:"code"`                           //	The coupon code
@@ -70,6 +70,56 @@ type CouponReturn struct {
 	AmountInCents   int64   `json:"amount_in_cents" mapstructure:"amount_in_cents"`     //	The amount_in_cents value of the coupon
 	Recurring       bool    `json:"recurring" mapstructure:"recurring"`                 //	A string value for the boolean of whether or not this coupon is recurring
 	ProductFamilyID float64 `json:"product_family_id" mapstructure:"product_family_id"` //	The id for the product family
+}
+
+// ListCouponsQueryParams are the query params for coupon listing. Note that a lot of the fields were deprecated as they now prefer
+// a query string array of filter indexes, but we expose the higher-level fields and consolidate it on the call
+type ListCouponsQueryParams struct {
+	CurrencyPrices *bool    `json:"currency_prices"`
+	Page           *int     `json:"page"`
+	PerPage        *int     `json:"per_page"`
+	Codes          []string `json:"codes"`
+	DateField      *string  `json:"date_field"`
+	EndDate        *string  `json:"end_date"`
+	EndDateTime    *string  `json:"end_datetime"`
+	IDs            []string `json:"ids"`
+	StartDate      *string  `json:"start_date"`
+	StartDateTime  *string  `json:"start_date_time"`
+}
+
+func (input *ListCouponsQueryParams) toMap() *map[string]string {
+	m := map[string]string{}
+	if input.CurrencyPrices != nil {
+		m["currency_prices"] = fmt.Sprintf("%v", ToBool(input.CurrencyPrices))
+	}
+	if input.Page != nil {
+		m["page"] = fmt.Sprintf("%d", ToInt(input.Page))
+	}
+	if input.PerPage != nil {
+		m["per_page"] = fmt.Sprintf("%d", ToInt(input.PerPage))
+	}
+	if len(input.Codes) > 0 {
+		m["filter[codes]"] = strings.Join(input.Codes, ",")
+	}
+	if len(input.IDs) > 0 {
+		m["filter[ids]"] = strings.Join(input.IDs, ",")
+	}
+	if input.DateField != nil {
+		m["filter[date_field]"] = ToString(input.DateField)
+	}
+	if input.EndDate != nil {
+		m["filter[end_date]"] = ToString(input.EndDate)
+	}
+	if input.EndDateTime != nil {
+		m["filter[end_datetime]"] = ToString(input.EndDateTime)
+	}
+	if input.StartDate != nil {
+		m["filter[start_date]"] = ToString(input.StartDate)
+	}
+	if input.StartDateTime != nil {
+		m["filter[start_date_time]"] = ToString(input.StartDateTime)
+	}
+	return &m
 }
 
 // CreateCoupon creates a new percent based coupon
@@ -157,4 +207,45 @@ func ArchiveCoupon(productFamilyID, couponID int64) error {
 		"couponID": fmt.Sprintf("%d", couponID),
 	})
 	return err
+}
+
+// ListCoupons lists out the coupons based upon the result of the passed in query params
+func ListCoupons(params *ListCouponsQueryParams) ([]CouponReturn, error) {
+	if params == nil {
+		params = &ListCouponsQueryParams{}
+	}
+	queryParams := params.toMap()
+	options := &makeCallOptions{
+		End:         endpoints[endpointCouponsList],
+		QueryParams: queryParams,
+	}
+
+	data := []CouponReturn{}
+
+	ret, err := makeAPICall(options)
+	if err != nil {
+		return data, err
+	}
+	apiBody, bodyOK := ret.Body.([]interface{})
+	if !bodyOK {
+		return nil, errors.New("could not understand server response")
+	}
+	// the result is an array of objects that have a coupon key, similar to:
+	// 	[
+	//   {
+	//     "coupon": {...}
+	//   }
+	// ]
+	// so we have a [] of interfaces; loop and convert
+	for i := range apiBody {
+		if raw, rawOK := apiBody[i].(map[string]interface{}); rawOK {
+			coupon := CouponReturn{}
+			err = mapstructure.Decode(raw["coupon"], &coupon)
+			if err == nil {
+				data = append(data, coupon)
+			}
+		}
+
+	}
+	return data, nil
 }

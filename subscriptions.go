@@ -32,6 +32,8 @@ type Subscription struct {
 	ReceivesInvoiceEmails         bool      `json:"receives_invoice_emails" mapstructure:"receives_invoice_emails"`                             // (Optional) Default: True - Whether or not this subscription is set to receive emails related to this subscription.
 	Customer                      *Customer `json:"customer,omitempty" mapstructure:"customer"`
 	Product                       *Product  `json:"product,omitempty" mapstructure:"product"`
+	// some of these are only used on the return
+	State string `json:"state,omitempty" mapstructure:"state"` // the state of the subscription
 }
 type ListSubscriptionEventsQueryParams struct {
 	Page      *int    `json:"page,omitempty" mapstructure:"page,omitempty"`
@@ -40,6 +42,68 @@ type ListSubscriptionEventsQueryParams struct {
 	MaxID     *int    `json:"max_id,omitempty" mapstructure:"max_id,omitempty"`
 	Direction *string `json:"direction,omitempty" mapstructure:"direction,omitempty"`
 	Filter    *string `json:"filter,omitempty" mapstructure:"filter,omitempty"`
+}
+
+// ListSubscriptionsQueryParams are the query parameters for listing subscriptions; see:
+// https://developers.chargify.com/docs/api-docs/51c68dd4dcb2b-list-subscriptions
+type ListSubscriptionsQueryParams struct {
+	Coupon              *int64  `json:"coupon"`
+	DateField           *string `json:"date_field"`
+	Direction           *string `json:"direction"`
+	EndDate             *string `json:"end_date"`
+	EndDateTime         *string `json:"end_datetime"`
+	Page                *int    `json:"page"`
+	PerPage             *int    `json:"per_page"`
+	Product             *string `json:"product"`
+	ProductPricePointID *int64  `json:"product_price_point_id"`
+	Sort                *string `json:"sort"`
+	StartDate           *string `json:"start_date"`
+	StartDateTime       *string `json:"start_datetime"`
+	State               *string `json:"state"`
+}
+
+func (input *ListSubscriptionsQueryParams) toMap() *map[string]string {
+	m := map[string]string{}
+	if input.Coupon != nil {
+		m["coupon"] = fmt.Sprintf("%d", ToInt64(input.Coupon))
+	}
+	if input.DateField != nil {
+		m["date_field"] = ToString(input.DateField)
+	}
+	if input.Direction != nil {
+		m["direction"] = ToString(input.Direction)
+	}
+	if input.EndDate != nil {
+		m["end_date"] = ToString(input.EndDate)
+	}
+	if input.EndDateTime != nil {
+		m["end_datetime"] = ToString(input.EndDateTime)
+	}
+	if input.Page != nil {
+		m["page"] = fmt.Sprintf("%d", ToInt(input.Page))
+	}
+	if input.PerPage != nil {
+		m["per_page"] = fmt.Sprintf("%d", ToInt(input.PerPage))
+	}
+	if input.Product != nil {
+		m["product"] = ToString(input.Product)
+	}
+	if input.ProductPricePointID != nil {
+		m["product_price_point_id"] = fmt.Sprintf("%d", ToInt64(input.ProductPricePointID))
+	}
+	if input.Sort != nil {
+		m["sort"] = ToString(input.Sort)
+	}
+	if input.StartDate != nil {
+		m["start_date"] = ToString(input.StartDate)
+	}
+	if input.StartDateTime != nil {
+		m["start_datetime"] = ToString(input.StartDateTime)
+	}
+	if input.State != nil {
+		m["state"] = ToString(input.State)
+	}
+	return &m
 }
 
 // CreateSubscriptionForCustomer creates a new subscription. When creating a subscription, you must specify a product and a customer.
@@ -230,4 +294,80 @@ func ListSubscriptionEvents(subscriptionID int, queryParams *ListSubscriptionEve
 	}
 	return found, nil
 
+}
+
+// PurgeSubscription purges a subscription from an account IN TEST MODE. This WILL NOT WORK on production environments.
+func PurgeSubscription(subscriptionID int64, customerID int64, cascadeCustomer bool, cascadePayment bool) error {
+	cascade := []string{}
+	if cascadeCustomer {
+		cascade = append(cascade, "customer")
+	}
+	if cascadePayment {
+		cascade = append(cascade, "payment_profile")
+	}
+
+	// note that we will eventually want to move the other calls to this cleaner approach at
+	// some point in the future
+	options := &makeCallOptions{
+		End: endpoints[endpointSubscriptionPurge],
+		MultiQueryParams: &map[string][]string{
+			"ack":     {fmt.Sprintf("%d", customerID)},
+			"cascade": cascade,
+		},
+		PathParams: &map[string]string{
+			"subscriptionID": fmt.Sprintf("%d", subscriptionID),
+		},
+	}
+
+	ret, err := makeAPICall(options)
+	if err != nil {
+		return err
+	}
+
+	// if successful, we can just return out from here
+	if ret.HTTPCode != http.StatusOK {
+		return fmt.Errorf("received a %d", ret.HTTPCode)
+	}
+	return nil
+}
+
+// ListSubscriptions lists out the subscriptions based upon the result of the passed in query params
+func ListSubscriptions(params *ListSubscriptionsQueryParams) ([]Subscription, error) {
+	if params == nil {
+		params = &ListSubscriptionsQueryParams{}
+	}
+	queryParams := params.toMap()
+	options := &makeCallOptions{
+		End:         endpoints[endpointSubscriptionsList],
+		QueryParams: queryParams,
+	}
+
+	data := []Subscription{}
+
+	ret, err := makeAPICall(options)
+	if err != nil {
+		return data, err
+	}
+	apiBody, bodyOK := ret.Body.([]interface{})
+	if !bodyOK {
+		return nil, errors.New("could not understand server response")
+	}
+	// the result is an array of objects that have a subscription key, similar to:
+	// 	[
+	//   {
+	//     "subscription": {...}
+	//   }
+	// ]
+	// so we have a [] of interfaces; loop and convert
+	for i := range apiBody {
+		if raw, rawOK := apiBody[i].(map[string]interface{}); rawOK {
+			sub := Subscription{}
+			err = mapstructure.Decode(raw["subscription"], &sub)
+			if err == nil {
+				data = append(data, sub)
+			}
+		}
+
+	}
+	return data, nil
 }

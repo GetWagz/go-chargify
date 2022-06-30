@@ -16,6 +16,7 @@ const (
 	endpointCouponCreate    = "coupon_create"
 	endpointCouponGetByCode = "find_coupon"
 	endpointCouponArchive   = "coupon_archive"
+	endpointCouponsList     = "coupons_list"
 
 	endpointCustomerCreate            = "customer_create"
 	endpointCustomerDelete            = "customer_delete"
@@ -55,6 +56,8 @@ const (
 	endpointSubscriptionCancelImmediately   = "subscription_cancel_immediately"
 	endpointSubscriptionCancelDelayed       = "subscription_cancel_delayed"
 	endpointSubscriptionRemoveDelayedCancel = "subscription_remove_delayed_cancel"
+	endpointSubscriptionPurge               = "subscription_purge"
+	endpointSubscriptionsList               = "subscriptions_list"
 
 	endpointSubscriptionMigrate   = "subscription_migrate"
 	endpointSubscriptionUpdateNow = "subscription_update_now"
@@ -352,6 +355,18 @@ var endpoints = map[string]endpoint{
 			"{componentID}",
 		},
 	},
+	endpointSubscriptionPurge: {
+		method: http.MethodPost,
+		uri:    "subscriptions/{subscriptionID}/purge.json",
+		pathParams: []string{
+			"{subscriptionID}",
+		},
+	},
+	endpointSubscriptionsList: {
+		method:     http.MethodGet,
+		uri:        "subscriptions.json",
+		pathParams: []string{},
+	},
 
 	// invoices
 	endpointGetInvoices: {
@@ -393,5 +408,10 @@ var endpoints = map[string]endpoint{
 			"{familyID}",
 			"{couponID}",
 		},
+	},
+	endpointCouponsList: {
+		method:     http.MethodGet,
+		uri:        "coupons.json",
+		pathParams: []string{},
 	},
 }
