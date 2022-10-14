@@ -1,7 +1,8 @@
 # Chargify SDK
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/GetWagz/go-chargify)](https://goreportcard.com/report/github.com/GetWagz/go-chargify)
-[![/github/go-mod/go-version/GetWagz/go-chargify](https://img.shields.io/github/go-mod/go-version/gomods/athens.svg)](https://github.com/go-mod/go-version/GetWagz/go-chargify)
+[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/GetWagz/go-chargify/blob/master/LICENSE)
+[![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://GitHub.com/GetWagz/go-chargify/releases/)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
 
 This library is a small wrapper around a subset of the Chargify API.
