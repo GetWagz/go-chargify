@@ -1,6 +1,7 @@
 # Chargify SDK
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/GetWagz/go-chargify)](https://goreportcard.com/report/github.com/GetWagz/go-chargify)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
 
 This library is a small wrapper around a subset of the Chargify API.
 
