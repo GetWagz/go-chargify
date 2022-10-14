@@ -8,6 +8,9 @@ This library is a small wrapper around a subset of the Chargify API.
 This library is actively used in production, however not all end points are used regularly. We do our best to keep up to date with changes, but focus primarily on our own
 needs. However, pull requests are always welcome!
 
+### Update as of 10/14/22
+Chargify has rebranded as "Maxio", but all references for the time being will remain to the name "Chargify".
+
 ## Usage
 
 Usage is fairly straight-forward. See Configuration for more information about setting up and configuring the SDK.
