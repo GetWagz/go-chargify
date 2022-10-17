@@ -1,11 +1,16 @@
 # Chargify SDK
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/GetWagz/go-chargify)](https://goreportcard.com/report/github.com/GetWagz/go-chargify)
+[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/GetWagz/go-chargify/blob/master/LICENSE)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
 
 This library is a small wrapper around a subset of the Chargify API.
 
 This library is actively used in production, however not all end points are used regularly. We do our best to keep up to date with changes, but focus primarily on our own
 needs. However, pull requests are always welcome!
+
+### Update as of 10/14/22
+Chargify has rebranded as "Maxio", but all references for the time being will remain to the name "Chargify".
 
 ## Usage
 
