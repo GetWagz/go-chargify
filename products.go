@@ -20,8 +20,8 @@ var (
 	ProductIntervalDay ProductInterval = "day"
 )
 
-// Component represents a single component
-type Component struct {
+// ProductFamilyComponent represents a single component for a product family
+type ProductFamilyComponent struct {
 	ID                        int64   `json:"id"`
 	Name                      string  `json:"name" mapstructure:"name"`
 	Handle                    string  `json:"handle" mapstructure:"handle"`
@@ -162,8 +162,8 @@ func GetProductFamilies() ([]ProductFamily, error) {
 }
 
 // GetProductFamilyProducts gets products in a family
-func GetProductFamilyComponents(id int64) ([]Component, error) {
-	found := []Component{}
+func GetProductFamilyComponents(id int64) ([]ProductFamilyComponent, error) {
+	found := []ProductFamilyComponent{}
 
 	ret, err := makeCall(endpoints[endpointProductFamilyComponentsGet], nil, &map[string]string{
 		"product_family_id": fmt.Sprintf("%d", id),
@@ -174,12 +174,12 @@ func GetProductFamilyComponents(id int64) ([]Component, error) {
 
 	temp := ret.Body.([]interface{})
 	for i := range temp {
-		entity := Component{}
+		entity := ProductFamilyComponent{}
 		entry := temp[i].(map[string]interface{})
 		entityRaw := entry["component"]
 		err = mapstructure.Decode(entityRaw, &entity)
 		if err != nil {
-			return []Component{}, err
+			return []ProductFamilyComponent{}, err
 		}
 		found = append(found, entity)
 	}
@@ -188,7 +188,7 @@ func GetProductFamilyComponents(id int64) ([]Component, error) {
 }
 
 // GetProductFamilyComponentByHandle gets components in a family
-func GetProductFamilyComponentByHandle(familyID int64, handle string) (*Component, error) {
+func GetProductFamilyComponentByHandle(familyID int64, handle string) (*ProductFamilyComponent, error) {
 
 	ret, err := makeCall(endpoints[endpointProductFamilyComponentByHandleGet], nil, &map[string]string{
 		"product_family_id": fmt.Sprintf("%d", familyID),
@@ -198,7 +198,7 @@ func GetProductFamilyComponentByHandle(familyID int64, handle string) (*Componen
 		return nil, err
 	}
 
-	entity := Component{}
+	entity := ProductFamilyComponent{}
 	entry := ret.Body.(map[string]interface{})
 	entityRaw := entry["component"]
 	err = mapstructure.Decode(entityRaw, &entity)
@@ -210,7 +210,7 @@ func GetProductFamilyComponentByHandle(familyID int64, handle string) (*Componen
 }
 
 // GetProductFamilyProducts gets products in a family
-func GetProductFamilyComponentById(familyID int64, componentID int64) (*Component, error) {
+func GetProductFamilyComponentById(familyID int64, componentID int64) (*ProductFamilyComponent, error) {
 
 	ret, err := makeCall(endpoints[endpointProductFamilyComponentByIdGet], nil, &map[string]string{
 		"product_family_id": fmt.Sprintf("%d", familyID),
@@ -220,7 +220,7 @@ func GetProductFamilyComponentById(familyID int64, componentID int64) (*Componen
 		return nil, err
 	}
 
-	entity := Component{}
+	entity := ProductFamilyComponent{}
 	entry := ret.Body.(map[string]interface{})
 	entityRaw := entry["component"]
 	err = mapstructure.Decode(entityRaw, &entity)
