@@ -58,6 +58,7 @@ const (
 	endpointSubscriptionRemoveDelayedCancel = "subscription_remove_delayed_cancel"
 	endpointSubscriptionPurge               = "subscription_purge"
 	endpointSubscriptionsList               = "subscriptions_list"
+	endpointSubscriptionComponentsGet       = "subscriptions_components_get"
 
 	endpointSubscriptionMigrate   = "subscription_migrate"
 	endpointSubscriptionUpdateNow = "subscription_update_now"
@@ -294,6 +295,13 @@ var endpoints = map[string]endpoint{
 	endpointSubscriptionUpdate: {
 		method: http.MethodPut,
 		uri:    "subscriptions/{subscriptionID}",
+		pathParams: []string{
+			"{subscriptionID}",
+		},
+	},
+	endpointSubscriptionComponentsGet: {
+		method: http.MethodGet,
+		uri:    "subscriptions/{subscriptionID}/components.json",
 		pathParams: []string{
 			"{subscriptionID}",
 		},

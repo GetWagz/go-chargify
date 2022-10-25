@@ -35,6 +35,28 @@ type Subscription struct {
 	// some of these are only used on the return
 	State string `json:"state,omitempty" mapstructure:"state"` // the state of the subscription
 }
+
+type SubscriptionComponent struct {
+	ComponentID       int64  `json:"component_id" mapstructure:"component_id"`
+	SubscriptionID    int64  `json:"subscription_id" mapstructure:"subscription_id"`
+	AllocatedQuantity int64  `json:"allocated_quantity" mapstructure:"allocated_quantity"`
+	PricingScheme     string `json:"pricing_scheme" mapstructure:"pricing_scheme"`
+	Name              string `json:"name" mapstructure:"name"`
+	Kind              string `json:"kind" mapstructure:"kind"`
+	UnitName          string `json:"unit_name" mapstructure:"unit_name"`
+	PricePointID      int64  `json:"price_point_id" mapstructure:"price_point_id"`
+	PricePointHandle  string `json:"price_point_handle" mapstructure:"price_point_handle"`
+	PricePointType    string `json:"price_point_type" mapstructure:"price_point_type"`
+	PricePointName    string `json:"price_point_type" mapstructure:"price_point_type"`
+	Enabled           bool   `json:"enabled" mapstructure:"enabled"`
+	UnitBalance       int64  `json:"unit_balance" mapstructure:"unit_balance"`
+	ID                int64  `json:"id" mapstructure:"id"`
+	CreatedAt         string `json:"created_at" mapstructure:"created_at"`
+	UpdatedAt         string `json:"updated_at" mapstructure:"updated_at"`
+	ComponentHandle   string `json:"component_handle" mapstructure:"component_handle"`
+	ArchivedAt        string `json:"archived_at" mapstructure:"archived_at"`
+}
+
 type ListSubscriptionEventsQueryParams struct {
 	Page      *int    `json:"page,omitempty" mapstructure:"page,omitempty"`
 	PerPage   *int    `json:"per_page,omitempty" mapstructure:"per_page,omitempty"`
@@ -223,6 +245,32 @@ func GetSubscription(subscriptionID int64) (*Subscription, error) {
 	subscription := &Subscription{}
 	err = mapstructure.Decode(apiBody["subscription"], subscription)
 	return subscription, err
+}
+
+// GetProductFamilyProducts gets products in a family
+func GetSubscriptionComponents(subscriptionID int64) ([]SubscriptionComponent, error) {
+	found := []SubscriptionComponent{}
+
+	ret, err := makeCall(endpoints[endpointProductFamilyComponentsGet], nil, &map[string]string{
+		"subscriptionID": fmt.Sprintf("%d", subscriptionID),
+	})
+	if err != nil || ret.HTTPCode != http.StatusOK {
+		return found, err
+	}
+
+	temp := ret.Body.([]interface{})
+	for i := range temp {
+		entity := SubscriptionComponent{}
+		entry := temp[i].(map[string]interface{})
+		entityRaw := entry["component"]
+		err = mapstructure.Decode(entityRaw, &entity)
+		if err != nil {
+			return []SubscriptionComponent{}, err
+		}
+		found = append(found, entity)
+	}
+
+	return found, err
 }
 
 // GetSubscriptionMetaData gets the subscription metadata
