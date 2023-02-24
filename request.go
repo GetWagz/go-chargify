@@ -155,7 +155,7 @@ func executeAPICall(options *makeCallOptions) (ret APIReturn, err error) {
 				ret.Body = map[string]string{}
 				err = nil
 			} else {
-				err = errors.New("could not unmarshal the JSON response; check the API")
+				err = fmt.Errorf("could not unmarshal the JSON response: %w", err)
 				return
 			}
 		}
