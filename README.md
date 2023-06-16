@@ -9,7 +9,12 @@ This library is a small wrapper around a subset of the Chargify API.
 This library is actively used in production, however not all end points are used regularly. We do our best to keep up to date with changes, but focus primarily on our own
 needs. However, pull requests are always welcome!
 
-### Update as of 10/14/22
+## Deprecation and Maintenance
+
+Unfortunately, this repository is no longer being maintained. If you would like to take over maintenance of the repository, please open up an issue in this repository or otherwise contact us. We apologize if this is an inconvenience at all. We are going to freeze this archive. Feel free to fork it as you desire. Best of luck!
+
+## Update as of 10/14/22
+
 Chargify has rebranded as "Maxio", but all references for the time being will remain to the name "Chargify".
 
 ## Usage
@@ -104,7 +109,7 @@ Note that Chargify changes their API doc URLs regularly, so we have stopped prov
 
 ## Hiring
 
-Want to join an awesome team building cool products to improve the lives of pets and their owners? Send an email to engineering@wagz.com and let's find out if we're a good match! We are a remote-first company based in New Hampshire.
+Want to join an awesome team building cool products to improve the lives of pets and their owners? Send an email to [engineering@wagz.com](engineering@wagz.com) and let's find out if we're a good match! We are a remote-first company based in New Hampshire.
 
 ## Contributing
 
